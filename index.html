@@ -359,6 +359,78 @@
   .contrast-box p:last-child{ margin-bottom:0; }
   .contrast-box b{ color:#fff; }
 
+  /* ---------- fact-grid: quick key-value facts at a glance ---------- */
+  .fact-grid{
+    display:grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
+    gap:1px; background: var(--line);
+    border:1px solid var(--line); border-radius:10px;
+    overflow:hidden; margin-bottom:14px;
+  }
+  .fact{ background:#fff; padding:11px 14px; }
+  .fact-k{
+    display:block; font-family: var(--font-sans); font-weight:600; font-size:11px;
+    text-transform:uppercase; letter-spacing:.04em; color:var(--text-faint); margin-bottom:4px;
+  }
+  .fact-v{ display:block; font-size:14px; color:var(--ink); font-weight:600; line-height:1.35; }
+
+  /* ---------- flow-path: visual breadcrumb for navigation paths ---------- */
+  .flow-path{
+    display:flex; align-items:center; flex-wrap:wrap; gap:6px;
+    margin: 4px 0 12px;
+  }
+  .flow-step{
+    font-family: var(--font-mono); font-size:12.5px; font-weight:600;
+    background: var(--paper-2); border:1px solid var(--line);
+    color: var(--ink); padding:5px 10px; border-radius:7px; white-space:nowrap;
+  }
+  .flow-step.dest{ background: var(--brand); border-color:var(--brand); color:#fff; }
+  .flow-arrow{ color: var(--text-faint); font-size:13px; flex-shrink:0; }
+  .flow-label{
+    font-family: var(--font-sans); font-weight:600; font-size:12px;
+    color:var(--text-muted); margin: 12px 0 6px; display:block;
+  }
+  .flow-label:first-child{ margin-top:0; }
+
+  /* ---------- tag-group: permission category chips ---------- */
+  .tag-group{ display:flex; flex-wrap:wrap; gap:7px; margin:4px 0 12px; }
+  .tag{
+    font-family: var(--font-sans); font-weight:600; font-size:12.5px;
+    padding:6px 12px; border-radius:8px;
+    background: var(--brand-soft); color: var(--brand-strong);
+    border:1px solid var(--brand-line);
+  }
+  .tag.off{ background:var(--paper-2); color:var(--text-faint); border-color:var(--line); text-decoration:line-through; }
+  .tag.locked{ background:var(--local-bg); color:var(--local); border-color:var(--local-line); }
+
+  /* ---------- confidence badge: what's confirmed vs inferred ---------- */
+  .confidence{
+    display:inline-flex; align-items:center; gap:5px;
+    font-family: var(--font-sans); font-weight:700; font-size:10.5px;
+    text-transform:uppercase; letter-spacing:.03em;
+    padding:3px 9px; border-radius:999px; margin-bottom:8px;
+  }
+  .confidence::before{ content:""; width:6px; height:6px; border-radius:50%; }
+  .confidence.confirmed{ background: var(--central-bg); color: var(--central); }
+  .confidence.confirmed::before{ background: var(--central); }
+  .confidence.inferred{ background: var(--hybrid-bg); color: var(--hybrid); }
+  .confidence.inferred::before{ background: var(--hybrid); }
+
+  /* ---------- stat-highlight: single headline takeaway ---------- */
+  .stat-highlight{
+    display:flex; align-items:center; gap:16px;
+    background: var(--ink); border-radius:10px;
+    padding:16px 20px; margin-bottom:14px;
+  }
+  .stat-highlight .stat-value{
+    font-family: var(--font-sans); font-weight:300; font-size:26px;
+    color:#fff; line-height:1; white-space:nowrap;
+  }
+  .stat-highlight .stat-label{
+    font-family: var(--font-sans); font-size:13px; color: var(--on-ink-muted); line-height:1.4;
+  }
+  .stat-highlight.warn .stat-value{ color:#f2c9c0; }
+  .stat-highlight.ok .stat-value{ color:#9dd8bc; }
+
   /* ---------- tables (segue o guia BTG: header em bold, corpo em regular, linha de header com o dobro da espessura) ---------- */
   .table-wrap{ overflow-x:auto; border:1px solid var(--line); border-radius:12px; }
   table{ border-collapse: collapse; width:100%; min-width:720px; background:#fff; font-size: 14px; font-family: var(--font-sans); }
@@ -520,7 +592,7 @@
 
     <div class="sidebar-meta">
       <div><span class="status-dot"></span><b>Levantamento de mercado</b></div>
-      <div><b>Versão:</b> <span class="mono">v1.5</span></div>
+      <div><b>Versão:</b> <span class="mono">v1.7</span></div>
       <div><b>Última atualização:</b> 13 ago 2026</div>
     </div>
 
@@ -624,7 +696,7 @@
             <h3>Cielo</h3>
             <div class="sub">Maquininha LIO / Smart · adquirente tradicional</div>
           </div>
-          <span class="badge local"><svg class="badge-icon"><use href="#i-local"></use></svg>Local por terminal</span>
+          <span class="badge local"><svg class="badge-icon"><use href="#i-local"></use></svg>Local por dispositivo</span>
         </div>
         <p>A senha de operador e a senha de supervisor são cadastradas diretamente em cada terminal físico. A senha de supervisor é exigida para cancelamento de vendas e para o cadastro de novos operadores, tudo feito máquina por máquina.</p>
         <ul class="facts">
@@ -651,7 +723,7 @@
             <h3>GetNet</h3>
             <div class="sub">Grupo Santander · adquirente tradicional</div>
           </div>
-          <span class="badge local"><svg class="badge-icon"><use href="#i-local"></use></svg>Local por terminal</span>
+          <span class="badge local"><svg class="badge-icon"><use href="#i-local"></use></svg>Local por dispositivo</span>
         </div>
         <p>Cadastro de operador e senha de supervisor configurados diretamente no menu do terminal, com senha padrão de fábrica por modelo (por exemplo, 1111 ou 0000).</p>
         <ul class="facts">
@@ -676,7 +748,7 @@
             <h3>Rede / Sipag</h3>
             <div class="sub">Grupo Itaú · adquirente tradicional</div>
           </div>
-          <span class="badge local"><svg class="badge-icon"><use href="#i-local"></use></svg>Local por terminal</span>
+          <span class="badge local"><svg class="badge-icon"><use href="#i-local"></use></svg>Local por dispositivo</span>
         </div>
         <p>Cada terminal vem com senha padrão própria (por exemplo, 1111), trocada e cadastrada individualmente por máquina. O cadastro de operador é feito pelo menu "Manutenção" diretamente no aparelho.</p>
         <ul class="facts">
@@ -700,12 +772,12 @@
             <h3>PagBank</h3>
             <div class="sub">Moderninha (ex-PagSeguro) · adquirente digital</div>
           </div>
-          <span class="badge local"><svg class="badge-icon"><use href="#i-local"></use></svg>Local por máquina</span>
+          <span class="badge local"><svg class="badge-icon"><use href="#i-local"></use></svg>Local por dispositivo</span>
         </div>
         <p>O "Compartilhamento de Máquina" permite até 5 usuários diferentes na mesma máquina simultaneamente, cada um com conta própria, mas configurado por aparelho, não centralizado entre máquinas.</p>
         <ul class="facts">
           <li>A "conta de vendedor adicional" (PagVendas) permite vincular mais de uma máquina à mesma conta para visão consolidada de vendas. Isso é <b>relatório centralizado</b>, não gestão de permissão de operador entre máquinas.</li>
-          <li>Modelos mais recentes (Moderninha Smart 2) rodam Android e integram com o app PagBank para gestão financeira geral.</li>
+          <li>A Moderninha Smart 2 roda Android com dois apps pré-instalados que costumam ser confundidos: <b>PagVendas</b>, o app de frente de caixa (cadastro de produtos, preços, estoque, clientes e relatórios de venda), e o app <b>PagBank</b>, que é a conta digital em si, acessível direto na tela da maquininha (pagar contas, fazer transferências, recarga de celular, solicitar empréstimo usando o saldo das vendas). É uma integração da máquina com a conta bancária do lojista, não com gestão de operadores.</li>
         </ul>
         <details class="why-box">
           <summary>Por que eles fazem assim?</summary>
@@ -716,6 +788,7 @@
           <span class="sources-label">Fontes</span>
           <span class="src-item"><a href="https://maquininhaamarelinha.com/com-quantos-usuarios-posso-fazer-o-compartilhamento-de-maquina-pagbank/" target="_blank" rel="noopener">Compartilhamento de máquina PagBank</a><span class="src-date">set 2025</span></span>
           <span class="src-item"><a href="https://maquininhaamarelinha.com/e-possivel-ver-as-vendas-de-outras-maquinas-com-a-conta-de-vendedor-adicional-do-pagvendas-pagbank/" target="_blank" rel="noopener">Conta de vendedor adicional PagVendas</a><span class="src-date">jul 2024</span></span>
+          <span class="src-item"><a href="https://loja.pagbank.com.br/sem-celular/moderninha-smart-2" target="_blank" rel="noopener">Moderninha Smart 2, página oficial do produto</a><span class="src-date">consultado ago 2026</span></span>
         </div>
       </article>
 
@@ -758,33 +831,84 @@
 
         <div class="detail-group">
           <h4 class="detail-title"><span class="n">1</span>Modelo de identidade</h4>
-          <p>Cada pessoa que opera uma maquininha tem login individual, com e-mail e senha próprios, sem compartilhar credencial da conta principal. A operação em múltiplos terminais é organizada por uma hierarquia de três níveis: <b>Loja</b> agrupa <b>Caixas</b>, e cada Caixa é vinculado a um terminal Point físico específico. Um operador é designado a um Caixa, não à "maquininha em geral".</p>
+          <div class="fact-grid">
+            <div class="fact"><span class="fact-k">Quem autentica</span><span class="fact-v">Cada colaborador, com conta própria</span></div>
+            <div class="fact"><span class="fact-k">Como</span><span class="fact-v">QR Code do terminal + app já logado no celular</span></div>
+            <div class="fact"><span class="fact-k">Hierarquia</span><span class="fact-v">Loja → Caixa → terminal Point</span></div>
+            <div class="fact"><span class="fact-k">Escopo do login</span><span class="fact-v">1 operador por Caixa, não pela "maquininha" toda</span></div>
+          </div>
+          <p>A operação em múltiplos terminais é organizada por uma hierarquia de três níveis: <b>Loja</b> agrupa <b>Caixas</b>, e cada Caixa é vinculado a um terminal Point físico específico. Um operador é designado a um Caixa, não à "maquininha em geral".</p>
+          <p>Sobre o mecanismo de login em si: a fonte oficial de ativação descreve o processo como escanear o QR Code que aparece na tela do Point usando o app Mercado Pago já autenticado no celular da pessoa, o que finaliza o pareamento. Não encontrei uma fonte descrevendo digitação manual de e-mail e senha diretamente no teclado do terminal físico; o mais provável, dado esse fluxo, é que a autenticação em si aconteça no celular (app já logado) e o terminal só receba a confirmação por QR Code. Se um colaborador não conseguir acessar dessa forma, a orientação oficial é contatar o administrador da conta.</p>
           <p>A terminologia oficial separa dois conceitos que costumam ser confundidos: <b>ativação</b> é o vínculo físico do Point a uma conta, feito uma única vez no primeiro uso; <b>sessão</b> (ou login) é a autenticação de quem está operando o Caixa naquele momento, que se repete a cada troca de turno ou de operador.</p>
+          <p>Um detalhe adicional sobre o escopo da identidade: a mesma pessoa pode ser colaboradora em <b>contas de negócio diferentes</b> ao mesmo tempo, desde que convidada separadamente por cada administrador. O acesso a cada conta é independente, e a pessoa escolhe qual conta gerenciar ao entrar no app; não existe uma identidade única compartilhada entre contas de negócios diferentes.</p>
         </div>
 
         <div class="detail-group">
           <h4 class="detail-title"><span class="n">2</span>Fluxo de configuração</h4>
-          <p>Antes de cadastrar qualquer operador, é preciso montar a estrutura de <b>Lojas e Caixas</b>, em "Seu negócio" &gt; "Lojas e caixas" (ou "Negócio" &gt; "Configurações" &gt; "Lojas e Caixas", dependendo da versão do app). Cada Point físico é então vinculado a um Caixa.</p>
-          <p>A partir daí, tudo o resto acontece em <b>Configurações &gt; Negócio &gt; Colaboradores</b> (a mesma seção também aparece nomeada como "Seu Negócio" ou "Gerenciar equipe" em telas diferentes do app). Para convidar alguém: definir as permissões, nomear o cargo e, se necessário, atribuir a loja onde vai operar; o convite chega por e-mail. Para editar alguém já cadastrado: localizar a pessoa na lista, tocar em "Editar", escolher o novo nível de permissão e confirmar.</p>
+          <span class="flow-label">Pré-requisito, uma vez por negócio</span>
+          <div class="flow-path">
+            <span class="flow-step">Seu negócio</span><span class="flow-arrow">→</span>
+            <span class="flow-step">Lojas e caixas</span><span class="flow-arrow">→</span>
+            <span class="flow-step dest">Criar caixa e vincular ao Point</span>
+          </div>
+          <span class="flow-label">Convidar ou editar um colaborador</span>
+          <div class="flow-path">
+            <span class="flow-step">Configurações</span><span class="flow-arrow">→</span>
+            <span class="flow-step">Negócio</span><span class="flow-arrow">→</span>
+            <span class="flow-step dest">Colaboradores</span>
+          </div>
+          <p>A mesma seção também aparece nomeada como "Seu Negócio" ou "Gerenciar equipe" em telas diferentes do app, dependendo da versão. Para convidar alguém: definir as permissões, nomear o cargo e, se necessário, atribuir a loja onde vai operar; o convite chega por e-mail. Para editar alguém já cadastrado: localizar a pessoa na lista, tocar em "Editar", escolher o novo nível de permissão e confirmar.</p>
         </div>
 
         <div class="detail-group">
           <h4 class="detail-title"><span class="n">3</span>Estrutura e granularidade das permissões</h4>
-          <p>A granularidade é real e organizada em duas camadas que se combinam.</p>
-          <p>A primeira é por <b>categoria de permissão</b>: toda função é montada escolhendo o que ela acessa dentro de cinco categorias fixas (Recebimentos e pós-venda; Pagamentos e dinheiro; Serviços; Relatórios e métricas; Gestão e configuração). A segunda é específica do terminal físico: dentro do que a função permite, algumas ações continuam pedindo a <b>senha administrativa</b> mesmo de um colaborador já logado (fechar a sessão do dispositivo, alterar a própria senha, aprovar atividade suspeita), enquanto outras dependem só do toggle habilitado no perfil (reimprimir comprovante, consultar histórico, ver resumo de fechamento de caixa).</p>
-          <p>A organização é por <b>role reutilizável, não por perfil individual solto</b>: uma função nomeada (por exemplo, "Caixa", "Financeiro", "Gerente de Loja") é definida uma vez e pode ser atribuída a várias pessoas ao mesmo tempo; alterar a função propaga automaticamente para todos que a usam. O que fica fora da função e é atribuído pessoa a pessoa é o <b>escopo operacional</b>: duas pessoas podem ter a mesma função "Caixa", cada uma designada a um terminal físico diferente.</p>
+          <p>A granularidade é real e organizada em duas camadas que se combinam: por categoria de acesso, e por exigência ou não de senha administrativa.</p>
+          <span class="flow-label">Categorias de permissão disponíveis</span>
+          <div class="tag-group">
+            <span class="tag">Recebimentos e pós-venda</span>
+            <span class="tag">Pagamentos e dinheiro</span>
+            <span class="tag">Serviços</span>
+            <span class="tag">Relatórios e métricas</span>
+            <span class="tag">Gestão e configuração</span>
+          </div>
+          <span class="flow-label">No terminal físico, mesmo já logado</span>
+          <div class="tag-group">
+            <span class="tag locked">Fechar sessão do dispositivo</span>
+            <span class="tag locked">Alterar a própria senha</span>
+            <span class="tag locked">Aprovar atividade suspeita</span>
+          </div>
+          <p>As três ações acima continuam pedindo a <b>senha administrativa</b>, mesmo de um colaborador com sessão ativa. O restante (reimprimir comprovante, consultar histórico, ver resumo de fechamento de caixa) depende só do toggle habilitado no perfil, sem pedir senha adicional.</p>
+          <p>A organização é por <b>role reutilizável, não por perfil individual solto</b>: uma função nomeada é definida uma vez e pode ser atribuída a várias pessoas ao mesmo tempo; alterar a função propaga automaticamente para todos que a usam. O que fica fora da função e é atribuído pessoa a pessoa é o <b>escopo operacional</b>: duas pessoas podem ter a mesma função, cada uma designada a um terminal físico diferente.</p>
+          <p>Além dos nomes de exemplo genéricos ("Caixa", "Financeiro", "Gerente de Loja"), a documentação específica da Point Smart 2 usa três termos fixos para descrever o modelo básico: <b>Dono da conta</b> (controle total, inclusive configurações financeiras e gestão de colaboradores), <b>Gestor</b> (visualiza relatórios por caixa e o desempenho de cada vendedor, sem acessar configurações bancárias) e <b>Operador</b> (só processa vendas, sem acesso a saldo ou configurações financeiras). Isso sugere que, na prática, a maioria dos negócios usa esse conjunto de três papéis prontos, e a criação de funções totalmente customizadas fica reservada para casos mais específicos.</p>
         </div>
 
         <div class="detail-group">
           <h4 class="detail-title"><span class="n">4</span>Sincronização e comportamento de sessão</h4>
-          <p>Uma mudança de permissão feita no painel entra em vigor <b>imediatamente do lado da conta</b>: se o colaborador acessar pela web, já não vê mais o que foi desabilitado. No terminal físico Point Smart, porém, a regra nova só é baixada e aplicada quando o operador fecha a sessão ativa e loga de novo no dispositivo. São dois momentos distintos: o servidor atualiza na hora, o terminal sincroniza no próximo login daquele operador (modelo de sincronização por pull, não por push).</p>
-          <p>Há também um gate de compliance documentado: se a conta principal do negócio tiver KYC pendente ou algum dado cadastral faltando, um colaborador recém-convidado fica bloqueado e não consegue completar o primeiro login, mesmo com o convite já aceito.</p>
+          <div class="fact-grid">
+            <div class="fact"><span class="fact-k">Painel / conta</span><span class="fact-v">Muda na hora</span></div>
+            <div class="fact"><span class="fact-k">Terminal físico</span><span class="fact-v">Só no próximo login</span></div>
+          </div>
+          <p>Uma mudança de permissão feita no painel entra em vigor <b>imediatamente do lado da conta</b>: se o colaborador acessar pela web, já não vê mais o que foi desabilitado. No terminal físico Point Smart, porém, a regra nova só é baixada e aplicada quando o operador fecha a sessão ativa e loga de novo no dispositivo. São dois momentos distintos, um modelo de sincronização por pull, não por push.</p>
+          <span class="confidence confirmed">Confirmado pela fonte</span>
+          <p>Há um gate de compliance documentado: se a conta principal do negócio tiver KYC pendente ou algum dado cadastral faltando, um colaborador recém-convidado fica bloqueado e não consegue completar o primeiro login, mesmo com o convite já aceito.</p>
+          <span class="confidence inferred">Leitura própria, não confirmada</span>
           <p>Um ponto que as fontes oficiais não confirmam de forma explícita é se um Point Smart sem nenhum colaborador cadastrado, operado só pelo titular, exige uma tela de login antes de cada venda. A leitura mais sustentada pelo conjunto de fontes é que, nesse cenário de dono único, a ativação inicial já é suficiente e a maquininha funciona sem pedir login de novo; a exigência de login recorrente parece ser específica do modelo com Lojas e Caixas, onde o sistema precisa identificar quem está operando aquele caixa para atribuir a venda à pessoa certa. Vale validar esse comportamento na prática antes de tomar como definitivo.</p>
         </div>
 
         <div class="detail-group">
           <h4 class="detail-title"><span class="n">5</span>Remoção e revogação de acesso</h4>
-          <p>O titular remove um colaborador a qualquer momento pelo mesmo painel (Configurações &gt; Colaboradores &gt; selecionar a pessoa &gt; "Remover acesso" &gt; confirmar). A fonte oficial descreve o efeito como imediato para o acesso à conta: a pessoa não consegue mais entrar, sem necessidade de redefinir senhas.</p>
+          <div class="stat-highlight warn">
+            <span class="stat-value">?</span>
+            <span class="stat-label">Efeito sobre uma sessão já ativa no terminal físico no momento da remoção: não confirmado de forma explícita pelas fontes oficiais.</span>
+          </div>
+          <span class="flow-label">Como remover</span>
+          <div class="flow-path">
+            <span class="flow-step">Configurações</span><span class="flow-arrow">→</span>
+            <span class="flow-step">Colaboradores</span><span class="flow-arrow">→</span>
+            <span class="flow-step">Selecionar a pessoa</span><span class="flow-arrow">→</span>
+            <span class="flow-step dest">Remover acesso</span>
+          </div>
+          <p>A fonte oficial descreve o efeito como imediato para o acesso à conta: a pessoa não consegue mais entrar, sem necessidade de redefinir senhas.</p>
           <p>O efeito sobre uma sessão já ativa dentro do terminal físico, no momento exato da remoção, é menos claro. Juntando essa informação com o comportamento de sincronização descrito acima (o terminal só baixa regras novas ao logar de novo), a leitura mais provável é que uma sessão em andamento no Point Smart não é encerrada de forma forçada e instantânea, e sim no próximo momento em que o dispositivo tentar sincronizar ou quando o operador fizer logout. A comparação com o comportamento da InfinitePay, que é explícito nesse ponto, está detalhada no card ao lado.</p>
         </div>
 
@@ -797,13 +921,14 @@
           <span class="sources-label">Fontes</span>
           <span class="src-item"><a href="https://www.mercadopago.com.br/blog/configurar-multiplos-operadores-point-smart-caixa" target="_blank" rel="noopener">Configurar operadores na Point Smart</a><span class="src-date">jun 2026</span></span>
           <span class="src-item"><a href="https://www.mercadopago.com.br/blog/gerenciar-multiplos-usuarios-conta-negocio" target="_blank" rel="noopener">Gerenciar múltiplos usuários na Conta Negócio</a><span class="src-date">jul 2026</span></span>
-          <span class="src-item"><a href="https://www.mercadopago.com.br/blog/configurar-operadores-point-smart-2" target="_blank" rel="noopener">Configurar operadores na Point Smart 2</a><span class="src-date">jul/ago 2026</span></span>
+          <span class="src-item"><a href="https://www.mercadopago.com.br/blog/configurar-operadores-point-smart-2" target="_blank" rel="noopener">Configurar operadores na Point Smart 2 (Dono / Gestor / Operador)</a><span class="src-date">jul/ago 2026</span></span>
           <span class="src-item"><a href="https://www.mercadopago.com.br/blog/gestao-vendas-filiais-mercado-pago" target="_blank" rel="noopener">Gestão de múltiplos PDVs</a><span class="src-date">abr 2026</span></span>
           <span class="src-item"><a href="https://www.mercadolivre.com.br/blog/tudo-sobre-point-smart-2" target="_blank" rel="noopener">Point Smart 2: análise completa (armazenamento em nuvem)</a><span class="src-date">jan 2026</span></span>
           <span class="src-item"><a href="https://www.mercadopago.com.br/blog/como-mercado-pago-te-ajuda-a-gerenciar-os-colaboradores-no-seu-negocio" target="_blank" rel="noopener">Como o Mercado Pago ajuda a gerenciar colaboradores</a><span class="src-date">jul 2026</span></span>
-          <span class="src-item"><a href="https://www.mercadopago.com.br/blog/adicionar-gerenciar-beneficiarios-conta-mercado-pago" target="_blank" rel="noopener">Beneficiários no Mercado Pago: como adicionar e gerenciar</a><span class="src-date">jul 2026</span></span>
-          <span class="src-item"><a href="https://www.mercadopago.com.br/blog/gestao-de-colaboradores-acesso-conta" target="_blank" rel="noopener">Como gerenciar colaboradores na sua conta Mercado Pago</a><span class="src-date">abr 2026</span></span>
-          <span class="src-item"><a href="https://www.capacitacaovendas.com/como-configurar-point-smart-2-mercado-pago/" target="_blank" rel="noopener">Como configurar Point Smart 2 e fazer a primeira venda</a><span class="src-date">abr 2026</span></span>
+          <span class="src-item"><a href="https://www.mercadopago.com.br/blog/adicionar-gerenciar-beneficiarios-conta-mercado-pago" target="_blank" rel="noopener">Beneficiários no Mercado Pago (fato do acesso multi-conta)</a><span class="src-date">jul 2026</span></span>
+          <span class="src-item"><a href="https://empresas.mercadopago.com.br/cadastrar-maquininha-mercado-pago" target="_blank" rel="noopener">Como cadastrar a maquininha (login por QR Code)</a><span class="src-date">jan 2025</span></span>
+          <span class="src-item"><a href="https://www.mercadopago.com.br/blog/modo-offline-point-vendas-sem-internet" target="_blank" rel="noopener">Modo offline da Point (Pro 3 confirmado; Smart não confirmado nominalmente)</a><span class="src-date">jul 2026</span></span>
+          <span class="src-item"><a href="https://www.mercadopago.com.br/blog/perguntas-sobre-point-mercado-pago" target="_blank" rel="noopener">Point: 8 dúvidas essenciais (dados móveis por modelo)</a><span class="src-date">jul 2026</span></span>
         </div>
       </article>
 
@@ -819,32 +944,68 @@
 
         <div class="detail-group">
           <h4 class="detail-title"><span class="n">1</span>Modelo de identidade</h4>
+          <div class="fact-grid">
+            <div class="fact"><span class="fact-k">Modo Equipe</span><span class="fact-v">Identidade própria (CPF, e-mail, conta)</span></div>
+            <div class="fact"><span class="fact-k">Modo Vendedor</span><span class="fact-v">Sem identidade, é o dispositivo travado</span></div>
+            <div class="fact"><span class="fact-k">Autenticação por pessoa</span><span class="fact-v">Só existe no Modo Equipe</span></div>
+          </div>
           <p>O <b>Modo Equipe</b> cria uma identidade individual de verdade: o vendedor tem CPF, e-mail e conta InfinitePay próprios, usados principalmente para vender pelo próprio celular via InfiniteTap. É o único ponto do produto em que existe autenticação por pessoa.</p>
           <p>O <b>Modo Vendedor</b> não cria identidade nenhuma. Ele é aplicado a um dispositivo, seja um celular extra, seja a própria Maquininha Smart, que continua autenticado com a conta do <b>titular</b>; o modo apenas restringe a interface daquele aparelho a funções de venda. Quem usa o dispositivo não se identifica: o controle é por aparelho, não por pessoa.</p>
         </div>
 
         <div class="detail-group">
           <h4 class="detail-title"><span class="n">2</span>Fluxo de configuração</h4>
-          <p>Para cadastrar ou editar um vendedor do Modo Equipe: App InfinitePay &gt; menu "Vendas" &gt; "Gestão de equipe" (em telas mais antigas aparece como "Sua Equipe") &gt; lista de vendedores, com opção de adicionar, editar ou excluir. Todo esse fluxo acontece no app do dono, nunca no aparelho do vendedor.</p>
-          <p>Para configurar o Modo Vendedor na Maquininha Smart: diretamente no terminal físico, botão central inferior &gt; app "Vender" &gt; ícone de Configurações &gt; "Seu PDV" &gt; ativar "Modo Vendedor" &gt; marcar quais funções ficam liberadas. É uma configuração feita fisicamente no dispositivo compartilhado, não remotamente pelo celular do dono.</p>
+          <span class="flow-label">Cadastrar ou editar um vendedor do Modo Equipe (feito no app do dono)</span>
+          <div class="flow-path">
+            <span class="flow-step">App InfinitePay</span><span class="flow-arrow">→</span>
+            <span class="flow-step">Vendas</span><span class="flow-arrow">→</span>
+            <span class="flow-step dest">Gestão de equipe</span>
+          </div>
+          <span class="flow-label">Ativar o Modo Vendedor (feito no próprio terminal físico)</span>
+          <div class="flow-path">
+            <span class="flow-step">Maquininha Smart</span><span class="flow-arrow">→</span>
+            <span class="flow-step">app "Vender"</span><span class="flow-arrow">→</span>
+            <span class="flow-step">Configurações</span><span class="flow-arrow">→</span>
+            <span class="flow-step">Seu PDV</span><span class="flow-arrow">→</span>
+            <span class="flow-step dest">Ativar Modo Vendedor</span>
+          </div>
+          <p>Em telas mais antigas do app, "Gestão de equipe" aparece nomeado como "Sua Equipe". Todo o fluxo do Modo Equipe acontece no app do dono, nunca no aparelho do vendedor; já o Modo Vendedor é configuração física, feita diretamente no dispositivo compartilhado.</p>
         </div>
 
         <div class="detail-group">
           <h4 class="detail-title"><span class="n">3</span>Estrutura e granularidade das permissões</h4>
           <p>A granularidade aqui é bem mais rasa que a do Mercado Pago: não existe um sistema de categorias combináveis nem roles nomeadas reutilizáveis.</p>
-          <p>O Modo Equipe é binário por natureza: ao cadastrar um novo perfil, a única opção de papel documentada é "Vendedor ativo", com um pacote de permissões fixo e padronizado pela própria InfinitePay (InfiniteTap, Pix e Link de Pagamento; sem saldo, empréstimo ou alteração de conta). A única decisão configurável é se a pessoa é ou não vendedor, não o que exatamente ela pode fazer dentro disso.</p>
+          <span class="flow-label">Modo Equipe: pacote fixo, sem categorias configuráveis</span>
+          <div class="tag-group">
+            <span class="tag">InfiniteTap</span>
+            <span class="tag">Pix</span>
+            <span class="tag">Link de Pagamento</span>
+            <span class="tag locked">Saldo</span>
+            <span class="tag locked">Empréstimo</span>
+            <span class="tag locked">Alteração de conta</span>
+          </div>
+          <p>Ao cadastrar um novo perfil, a única opção de papel documentada é "Vendedor ativo", com esse pacote fixo e padronizado pela própria InfinitePay. A única decisão configurável é se a pessoa é ou não vendedor, não o que exatamente ela pode fazer dentro disso.</p>
           <p>O Modo Vendedor tem uma granularidade de natureza diferente, por função de venda visível na tela, não por categoria de dado: o dono escolhe manualmente quais funcionalidades do app "Vender" ficam disponíveis naquele dispositivo (catálogo de produtos, relatórios do dia, entre outras). É uma lista de toggles de visibilidade de tela, não uma matriz de permissão sobre dados financeiros como as cinco categorias do Mercado Pago.</p>
+          <p class="why-tag" style="margin-top:6px;">À parte da gestão de operador: vendas acima de R$ 200 pelo InfiniteTap pedem a senha do cartão do cliente, uma exigência dos bancos emissores contra fraude, não uma permissão do vendedor. Vale não confundir os dois mecanismos.</p>
         </div>
 
         <div class="detail-group">
           <h4 class="detail-title"><span class="n">4</span>Sincronização e comportamento de sessão</h4>
+          <div class="fact-grid">
+            <div class="fact"><span class="fact-k">Modo Equipe, login</span><span class="fact-v">Uma vez, ao aceitar o convite</span></div>
+            <div class="fact"><span class="fact-k">Modo Vendedor, login</span><span class="fact-v">Não existe (dispositivo já é o titular)</span></div>
+          </div>
           <p>No Modo Equipe, o login individual do vendedor acontece uma única vez, ao aceitar o convite. Depois disso, o comportamento é o de uma sessão de app comum: não há evidência documentada de que esse login precise ser refeito periodicamente, e a sessão persiste até o vendedor sair ou até o dono revogar o acesso.</p>
           <p>No Modo Vendedor não existe, a rigor, um evento de "login de operador": o dispositivo já está autenticado como o titular desde antes, e ativar o modo só restringe o que aparece na tela. A Maquininha Smart funciona normalmente assim que ativada na conta do titular; o Modo Vendedor não impede vendas, apenas limita o que fica visível para quem estiver operando o aparelho naquele momento.</p>
         </div>
 
         <div class="detail-group">
           <h4 class="detail-title"><span class="n">5</span>Remoção e revogação de acesso</h4>
-          <p>Este ponto está documentado de forma direta pela InfinitePay: <b>"Vendedores excluídos perdem o acesso imediatamente e não podem continuar usando a sessão ativa."</b> A remoção é feita pelo dono, remotamente, pelo app, a qualquer momento, sem necessidade de acesso físico ao celular do vendedor.</p>
+          <div class="stat-highlight ok">
+            <span class="stat-value">Na hora</span>
+            <span class="stat-label">Fonte oficial confirma: vendedor excluído perde o acesso imediatamente, inclusive numa sessão já em andamento.</span>
+          </div>
+          <p><b>"Vendedores excluídos perdem o acesso imediatamente e não podem continuar usando a sessão ativa."</b> A remoção é feita pelo dono, remotamente, pelo app, a qualquer momento, sem necessidade de acesso físico ao celular do vendedor.</p>
           <p>A revogação inclui encerrar uma sessão que já está em andamento, não apenas bloquear logins futuros. É uma garantia mais forte e mais explícita do que a documentada para o Mercado Pago, cujo comportamento equivalente está detalhado no card ao lado.</p>
         </div>
 
@@ -852,7 +1013,7 @@
           <h4 class="detail-title"><span class="n">⇄</span>Comparação direta: revogação de acesso</h4>
           <p><b>Mercado Pago:</b> remove o acesso à conta na hora, mas o terminal físico só aplica a mudança quando o operador fecha a sessão e loga de novo. O comportamento mais provável, embora não confirmado de forma explícita pelas fontes, é que uma sessão já ativa no Point Smart sobrevive até o próximo login ou sincronização.</p>
           <p><b>InfinitePay:</b> confirma de forma explícita que a sessão ativa é encerrada na hora, mesmo em andamento.</p>
-          <p>Uma explicação plausível para a diferença: o Point Smart foi desenhado para operar offline em campo (há inclusive um "modo offline" documentado), o que exige cache local de permissão e favorece revogação por sincronização. Já o Modo Equipe da InfinitePay depende do celular do vendedor estar sempre conectado para processar qualquer venda via InfiniteTap, o que permite validar a permissão em tempo real a cada transação, sem necessidade de cache local. É o mesmo trade-off entre autenticação offline e revogação em tempo real registrado na seção de Considerações de Arquitetura.</p>
+          <p>Uma explicação plausível para a diferença: a linha Point tem modo offline documentado, com destaque para a Point Pro 3, que armazena transações localmente sem sinal e sincroniza depois. Não encontrei uma fonte confirmando esse recurso nominalmente para a Point Smart, mas ela também roda com chip de dados próprio (funciona sem depender do Wi-Fi), o que já é meio caminho para operação mais autônoma. Esse tipo de desenho, pensado para tolerar desconexões, tende a exigir cache local de permissão e favorece revogação por sincronização em vez de tempo real. Já o Modo Equipe da InfinitePay depende do celular do vendedor estar sempre conectado para processar qualquer venda via InfiniteTap, o que permite validar a permissão em tempo real a cada transação, sem necessidade de cache local. É o mesmo trade-off entre autenticação offline e revogação em tempo real registrado na seção de Considerações de Arquitetura.</p>
         </div>
 
         <details class="why-box">
@@ -868,6 +1029,7 @@
           <span class="src-item"><a href="https://ajuda.infinitepay.io/pt-BR/articles/6097686-como-funciona-o-cancelamento-de-vendas" target="_blank" rel="noopener">Como funciona o cancelamento de vendas</a><span class="src-date">mai 2026</span></span>
           <span class="src-item"><a href="https://www.infinitepay.io/blog/modo-equipe-infinitepay" target="_blank" rel="noopener">Venda mais com o Modo Equipe da InfinitePay</a><span class="src-date">jan 2026</span></span>
           <span class="src-item"><a href="https://www.infinitepay.io/blog/tenha-mais-maquininhas-para-o-seu-negocio-com-o-modo-vendedor" target="_blank" rel="noopener">Tenha mais maquininhas com o Modo Vendedor</a><span class="src-date">jan 2026</span></span>
+          <span class="src-item"><a href="https://ajuda.infinitepay.io/pt-BR/articles/6624140-o-infinitetap-e-seguro" target="_blank" rel="noopener">O InfiniteTap é seguro? (senha acima de R$ 200)</a><span class="src-date">mai 2026</span></span>
           <span class="src-item"><a href="https://www.infinitepay.io/tap-to-pay" target="_blank" rel="noopener">Tap to Pay: Maquininha de Cartão no Celular</a><span class="src-date">consultado ago 2026</span></span>
           <span class="src-item"><a href="https://www.infinitepay.io/" target="_blank" rel="noopener">InfinitePay, site institucional (declaração de arquitetura em nuvem)</a><span class="src-date">consultado ago 2026</span></span>
           <span class="src-item"><a href="https://en.wikipedia.org/wiki/CloudWalk_(company)" target="_blank" rel="noopener">CloudWalk (empresa), Wikipedia</a><span class="src-date">artigo colaborativo, consultado ago 2026</span></span>
@@ -932,22 +1094,22 @@
           <tbody>
             <tr data-model="local">
               <td>Cielo</td>
-              <td><span class="badge local"><svg class="badge-icon"><use href="#i-local"></use></svg>Local</span></td>
+              <td><span class="badge local"><svg class="badge-icon"><use href="#i-local"></use></svg>Local por dispositivo</span></td>
               <td>N/A</td><td>Não</td><td>Não</td><td>Não observado</td>
             </tr>
             <tr data-model="local">
               <td>GetNet</td>
-              <td><span class="badge local"><svg class="badge-icon"><use href="#i-local"></use></svg>Local</span></td>
+              <td><span class="badge local"><svg class="badge-icon"><use href="#i-local"></use></svg>Local por dispositivo</span></td>
               <td>N/A</td><td>Não</td><td>Não</td><td>Não observado</td>
             </tr>
             <tr data-model="local">
               <td>Rede / Sipag</td>
-              <td><span class="badge local"><svg class="badge-icon"><use href="#i-local"></use></svg>Local</span></td>
+              <td><span class="badge local"><svg class="badge-icon"><use href="#i-local"></use></svg>Local por dispositivo</span></td>
               <td>N/A</td><td>Não</td><td>Não</td><td>Não observado</td>
             </tr>
             <tr data-model="local">
               <td>PagBank</td>
-              <td><span class="badge local"><svg class="badge-icon"><use href="#i-local"></use></svg>Local (por máquina)</span></td>
+              <td><span class="badge local"><svg class="badge-icon"><use href="#i-local"></use></svg>Local por dispositivo</span></td>
               <td>N/A</td><td>Não</td><td>Só relatório</td><td>Não observado</td>
             </tr>
             <tr data-model="hybrid">
@@ -1145,6 +1307,29 @@
         <p>Registro de versões desta documentação. Cada rodada de pesquisa ou decisão vira uma entrada aqui.</p>
       </div>
       <div class="changelog">
+        <div class="change-entry">
+          <div class="change-head"><span class="change-version">v1.7</span><span class="change-date">13 ago 2026</span></div>
+          <p>Auditoria completa dos cards de Mercado Pago e InfinitePay, com correção de imprecisões e redesenho visual das explicações para leitura mais rápida, sem reduzir conteúdo.</p>
+          <ul>
+            <li>Badges "Local por terminal" e "Local por máquina" unificadas em "Local por dispositivo" (Cielo, GetNet, Rede/Sipag, PagBank), inclusive na tabela comparativa</li>
+            <li>Corrigido o mecanismo de login do Mercado Pago: não é e-mail e senha digitados no terminal, é pareamento por QR Code com o app já autenticado no celular</li>
+            <li>Adicionados os três papéis realmente documentados da Point Smart 2 (Dono da conta, Gestor, Operador), complementando o exemplo genérico de roles</li>
+            <li>Adicionado achado sobre multi-conta: a mesma pessoa pode ser colaboradora em contas de negócio diferentes, cada acesso independente</li>
+            <li>Suavizada a afirmação sobre "modo offline" da Point Smart: confirmado para a Point Pro 3, não confirmado nominalmente para a Smart</li>
+            <li>Removida fonte de baixa qualidade (conteúdo confuso misturando beneficiários e colaboradores) como base de uma afirmação; mantida só para o fato específico de multi-conta</li>
+            <li>Adicionada nota sobre a senha de R$ 200 do InfiniteTap na InfinitePay, deixando claro que é regra do banco emissor sobre o cliente, não permissão do vendedor</li>
+            <li>Novos componentes visuais: grade de fatos rápidos, caminho de navegação em formato de trilha, chips de categoria de permissão, selos de confiança (confirmado/leitura própria) e destaque de estatística-chave, aplicados nos cinco blocos de cada card</li>
+          </ul>
+        </div>
+        <div class="change-entry">
+          <div class="change-head"><span class="change-version">v1.6</span><span class="change-date">13 ago 2026</span></div>
+          <p>Correção no card da PagBank: a frase sobre a Moderninha Smart 2 "integrar com o app PagBank" estava vaga e sem fonte própria.</p>
+          <ul>
+            <li>Substituída por uma explicação precisa: a máquina roda dois apps distintos, PagVendas (frente de caixa) e PagBank (conta digital, bancária)</li>
+            <li>Deixado explícito que essa integração é bancária, não relacionada à gestão de operadores</li>
+            <li>Adicionada fonte oficial (página do produto)</li>
+          </ul>
+        </div>
         <div class="change-entry">
           <div class="change-head"><span class="change-version">v1.5</span><span class="change-date">13 ago 2026</span></div>
           <p>Remoção de todas as referências à empresa e ao time interno, deixando o documento como uma pesquisa de mercado genérica sobre gestão de usuários em POS.</p>
