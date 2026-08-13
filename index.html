@@ -519,8 +519,8 @@
     </div>
 
     <div class="sidebar-meta">
-      <div><span class="status-dot"></span><b>Levantamento de mercado</div>
-      <div><b>Versão:</b> <span class="mono">v1.3</span></div>
+      <div><span class="status-dot"></span><b>Levantamento de mercado</b></div>
+      <div><b>Versão:</b> <span class="mono">v1.5</span></div>
       <div><b>Última atualização:</b> 13 ago 2026</div>
     </div>
 
@@ -600,6 +600,7 @@
       <div class="prose">
         <p>Este documento tem um intuito de mapear e identificar como os principais players do mercado fazem a Gestão de Usuários em suas POSs, vendo quem se diferencia e o por que se diferencia.</p>
       </div>
+
       <div class="prose" style="margin-top:26px;">
         <p style="font-weight:700; color:var(--ink);">Nota sobre a atualidade das fontes</p>
         <p class="muted">Toda fonte usada nesta pesquisa foi checada quanto à data de publicação ou última atualização, quando essa informação estava disponível. O mês e o ano aparecem ao lado de cada link, na caixa "Fontes" de cada card. Quando não foi possível confirmar uma data (por exemplo, centrais de ajuda que não expõem essa informação), isso também está sinalizado explicitamente, em vez de presumir que o conteúdo é recente. Duas fontes se mostraram bem mais antigas que as demais (uma de 2022 e uma de 2020, ambas na seção Rede / Sipag) e um manual de desenvolvedor da Cielo estava com o portal congelado desde 24/06/2026, migrado para um novo endereço. Isso não invalida a conclusão sobre arquitetura local (é uma característica estrutural do hardware, não algo que muda de mês a mês), mas vale reconfirmar detalhes operacionais específicos antes de qualquer decisão crítica de produto.</p>
@@ -609,7 +610,7 @@
     <section id="mercado">
       <div class="section-head">
         <span class="section-eyebrow">02 · Levantamento de mercado</span>
-        <h2>Como os principais players fazem gestão de usuários</h2>
+        <h2>Como os concorrentes fazem gestão de usuários</h2>
         <p>Pesquisa de campo sobre 10 concorrentes: adquirentes tradicionais brasileiros, players nativos digitais e referências internacionais de POS cloud-native. Cada card resume o modelo, como funciona na prática, por que o concorrente provavelmente escolheu esse caminho, e as fontes usadas.</p>
       </div>
 
@@ -753,34 +754,38 @@
           </div>
           <span class="badge central"><svg class="badge-icon"><use href="#i-central"></use></svg>Backend centralizado</span>
         </div>
-        <p>O concorrente nacional que já resolve exatamente o que a provocação executiva propõe. A configuração de operadores acontece no <b>painel administrativo da conta</b>, não diretamente na maquininha, através da funcionalidade "Colaboradores". Existe também um painel de "Colaboradores" separado dentro do Mercado Pago Developers (Sua conta, Gerenciar colaboradores), voltado a dar acesso técnico a uma aplicação/integração. É um sistema diferente do que trata este levantamento, que é o de operador de loja física, mas vale não confundir os dois se você for procurar direto na documentação deles.</p>
+        <p>O concorrente nacional que já resolve exatamente o que a provocação executiva propõe. A configuração de operadores acontece no <b>painel administrativo da conta</b>, não diretamente na maquininha, através da funcionalidade "Colaboradores". Vale uma ressalva de nomenclatura: existe também um painel de "Colaboradores" dentro do Mercado Pago Developers, voltado a dar acesso técnico a uma aplicação ou integração. É um sistema separado do que interessa aqui, que é o operador de loja física, mas os dois usam o mesmo nome na documentação oficial.</p>
 
         <div class="detail-group">
-          <h4 class="detail-title"><span class="n">1</span>Onde a permissão é alterada</h4>
-          <p>Tudo acontece no painel da conta, nunca no terminal físico. O caminho documentado é <b>Configurações &gt; Negócio &gt; Colaboradores</b> (em algumas telas aparece como "Seu Negócio" ou "Gerenciar equipe", nomes usados para a mesma seção). Pelo app ou pelo site: localize o colaborador na lista, toque em "Editar", escolha o novo nível de permissão ou ajuste a função, e confirme.</p>
-          <p>Antes disso, para múltiplos operadores por terminal, é preciso ter criado a estrutura de <b>Lojas e Caixas</b> em "Seu negócio" &gt; "Lojas e caixas", vinculando cada Point físico a um caixa específico. Cada operador então faz login no caixa que lhe foi designado, não na maquininha "em geral".</p>
-          <div class="callout">Achado importante: a mudança de permissão no painel entra em vigor <b>imediatamente do lado da conta</b> (o colaborador já não vê mais o que foi desabilitado se entrar pela conta web). Mas no terminal físico Point Smart, a regra só é baixada e aplicada quando o operador fecha a sessão ativa e loga de novo no dispositivo. São dois momentos diferentes: mudar no painel é instantâneo, o terminal físico só sincroniza no próximo login daquele operador.</div>
+          <h4 class="detail-title"><span class="n">1</span>Modelo de identidade</h4>
+          <p>Cada pessoa que opera uma maquininha tem login individual, com e-mail e senha próprios, sem compartilhar credencial da conta principal. A operação em múltiplos terminais é organizada por uma hierarquia de três níveis: <b>Loja</b> agrupa <b>Caixas</b>, e cada Caixa é vinculado a um terminal Point físico específico. Um operador é designado a um Caixa, não à "maquininha em geral".</p>
+          <p>A terminologia oficial separa dois conceitos que costumam ser confundidos: <b>ativação</b> é o vínculo físico do Point a uma conta, feito uma única vez no primeiro uso; <b>sessão</b> (ou login) é a autenticação de quem está operando o Caixa naquele momento, que se repete a cada troca de turno ou de operador.</p>
         </div>
 
         <div class="detail-group">
-          <h4 class="detail-title"><span class="n">2</span>Como funciona a granularidade</h4>
-          <p>Sim, o Mercado Pago tem granularidade real, e ela é organizada em <b>duas camadas que se combinam</b>, não uma única.</p>
-          <p><b>Camada 1, por categoria de permissão.</b> Toda função criada é montada escolhendo o que ela acessa dentro de cinco categorias fixas: Recebimentos e pós-venda (cobrar clientes, gerenciar devoluções e contestações), Pagamentos e dinheiro (transferências, saques, pagamento de contas), Serviços, Relatórios e métricas (extratos, histórico de vendas), e Gestão e configuração (administrar conta, lojas e equipe).</p>
-          <p><b>Camada 2, específica do terminal Point Smart.</b> Dentro do que a função permite, existe ainda uma divisão entre ações que pedem a <b>senha administrativa</b> mesmo de um colaborador já logado (fechar a sessão do dispositivo, alterar a própria senha, aprovar atividade suspeita) e ações "sem senha" que dependem só do toggle da função (reimprimir comprovante, consultar histórico, ver resumo de fechamento de caixa). Ou seja, mesmo dentro de uma sessão autenticada, algumas ações têm uma segunda trava.</p>
-          <p><b>É por role, não por perfil individual solto.</b> Você cria uma <b>função</b> nomeada (por exemplo, "Caixa", "Financeiro", "Gerente de Loja"), define o pacote de permissões dela uma vez, e essa mesma função pode ser atribuída a várias pessoas ao mesmo tempo. Mudar a função propaga automaticamente para todo mundo que a usa. O que é individual, e não fica dentro da função, é a <b>loja/caixa em que a pessoa vai operar</b>: duas pessoas podem ter exatamente a mesma função "Caixa", mas cada uma escalada para um caixa físico diferente. Resumindo: o pacote de permissões é da role, o escopo operacional (onde a pessoa trabalha) é atribuído por pessoa.</p>
+          <h4 class="detail-title"><span class="n">2</span>Fluxo de configuração</h4>
+          <p>Antes de cadastrar qualquer operador, é preciso montar a estrutura de <b>Lojas e Caixas</b>, em "Seu negócio" &gt; "Lojas e caixas" (ou "Negócio" &gt; "Configurações" &gt; "Lojas e Caixas", dependendo da versão do app). Cada Point físico é então vinculado a um Caixa.</p>
+          <p>A partir daí, tudo o resto acontece em <b>Configurações &gt; Negócio &gt; Colaboradores</b> (a mesma seção também aparece nomeada como "Seu Negócio" ou "Gerenciar equipe" em telas diferentes do app). Para convidar alguém: definir as permissões, nomear o cargo e, se necessário, atribuir a loja onde vai operar; o convite chega por e-mail. Para editar alguém já cadastrado: localizar a pessoa na lista, tocar em "Editar", escolher o novo nível de permissão e confirmar.</p>
         </div>
 
         <div class="detail-group">
-          <h4 class="detail-title"><span class="n">3</span>Bloqueio e casos de login</h4>
-          <p>O que está documentado com clareza: se a conta principal do negócio tiver KYC pendente ou dado cadastral faltando, um colaborador convidado <b>fica bloqueado e não consegue completar o primeiro login</b> na maquininha, mesmo com o convite já aceito e o cadastro correto. Isso é um gate de compliance na conta, não uma trava do hardware em si.</p>
-          <p>Sobre login recorrente: a terminologia oficial distingue <b>"Ativar"</b> (vincular o Point a uma conta, feito uma única vez no primeiro uso) de <b>"Iniciar sessão"</b> (entrar com a conta quando o dispositivo pede, o que acontece depois de um reset ou de uma troca de conta). Num cenário multi-operador com Lojas e Caixas, cada operador loga no caixa que lhe foi atribuído para que as vendas fiquem separadas por turno, então o login ali é recorrente, por turno, não único.</p>
-          <p>O que não encontrei uma fonte oficial confirmando de forma explícita: se um Point Smart sem nenhum colaborador configurado (só o titular) exige uma tela de login antes de cada venda, ou se ele funciona direto após a ativação inicial. A leitura mais sustentada pelas fontes é que, para uma configuração de dono único, a ativação inicial já é suficiente e a maquininha opera normalmente sem pedir login de novo. A exigência de login recorrente parece ser específica do modelo com Lojas e Caixas, onde o sistema precisa saber quem está logado naquele caixa para atribuir a venda a um operador. Vale validar esse ponto na prática com uma conta de teste antes de tomar como definitivo.</p>
+          <h4 class="detail-title"><span class="n">3</span>Estrutura e granularidade das permissões</h4>
+          <p>A granularidade é real e organizada em duas camadas que se combinam.</p>
+          <p>A primeira é por <b>categoria de permissão</b>: toda função é montada escolhendo o que ela acessa dentro de cinco categorias fixas (Recebimentos e pós-venda; Pagamentos e dinheiro; Serviços; Relatórios e métricas; Gestão e configuração). A segunda é específica do terminal físico: dentro do que a função permite, algumas ações continuam pedindo a <b>senha administrativa</b> mesmo de um colaborador já logado (fechar a sessão do dispositivo, alterar a própria senha, aprovar atividade suspeita), enquanto outras dependem só do toggle habilitado no perfil (reimprimir comprovante, consultar histórico, ver resumo de fechamento de caixa).</p>
+          <p>A organização é por <b>role reutilizável, não por perfil individual solto</b>: uma função nomeada (por exemplo, "Caixa", "Financeiro", "Gerente de Loja") é definida uma vez e pode ser atribuída a várias pessoas ao mesmo tempo; alterar a função propaga automaticamente para todos que a usam. O que fica fora da função e é atribuído pessoa a pessoa é o <b>escopo operacional</b>: duas pessoas podem ter a mesma função "Caixa", cada uma designada a um terminal físico diferente.</p>
         </div>
 
         <div class="detail-group">
-          <h4 class="detail-title"><span class="n">4</span>Remoção de acesso</h4>
-          <p>O titular remove um colaborador a qualquer momento pelo mesmo painel (Configurações &gt; Colaboradores &gt; selecionar a pessoa &gt; "Remover acesso" &gt; confirmar). O texto oficial diz que <b>"o colaborador perde o acesso à conta na hora, sem necessidade de redefinir senhas"</b>. Isso é claro para o acesso à conta (login futuro fica bloqueado de imediato).</p>
-          <p>O que fica menos claro é o efeito sobre uma <b>sessão já ativa dentro do terminal físico</b> naquele exato momento. Juntando essa informação com o achado do item 1 (o terminal só baixa regras novas ao logar de novo), a leitura mais provável é que uma sessão em andamento no Point Smart não é encerrada instantaneamente à força. Ela some no próximo momento em que o dispositivo tentar sincronizar ou quando o operador fizer logout. Isso é diferente do que a InfinitePay documenta explicitamente para o Modo Equipe, veja a caixa de comparação no card ao lado.</p>
+          <h4 class="detail-title"><span class="n">4</span>Sincronização e comportamento de sessão</h4>
+          <p>Uma mudança de permissão feita no painel entra em vigor <b>imediatamente do lado da conta</b>: se o colaborador acessar pela web, já não vê mais o que foi desabilitado. No terminal físico Point Smart, porém, a regra nova só é baixada e aplicada quando o operador fecha a sessão ativa e loga de novo no dispositivo. São dois momentos distintos: o servidor atualiza na hora, o terminal sincroniza no próximo login daquele operador (modelo de sincronização por pull, não por push).</p>
+          <p>Há também um gate de compliance documentado: se a conta principal do negócio tiver KYC pendente ou algum dado cadastral faltando, um colaborador recém-convidado fica bloqueado e não consegue completar o primeiro login, mesmo com o convite já aceito.</p>
+          <p>Um ponto que as fontes oficiais não confirmam de forma explícita é se um Point Smart sem nenhum colaborador cadastrado, operado só pelo titular, exige uma tela de login antes de cada venda. A leitura mais sustentada pelo conjunto de fontes é que, nesse cenário de dono único, a ativação inicial já é suficiente e a maquininha funciona sem pedir login de novo; a exigência de login recorrente parece ser específica do modelo com Lojas e Caixas, onde o sistema precisa identificar quem está operando aquele caixa para atribuir a venda à pessoa certa. Vale validar esse comportamento na prática antes de tomar como definitivo.</p>
+        </div>
+
+        <div class="detail-group">
+          <h4 class="detail-title"><span class="n">5</span>Remoção e revogação de acesso</h4>
+          <p>O titular remove um colaborador a qualquer momento pelo mesmo painel (Configurações &gt; Colaboradores &gt; selecionar a pessoa &gt; "Remover acesso" &gt; confirmar). A fonte oficial descreve o efeito como imediato para o acesso à conta: a pessoa não consegue mais entrar, sem necessidade de redefinir senhas.</p>
+          <p>O efeito sobre uma sessão já ativa dentro do terminal físico, no momento exato da remoção, é menos claro. Juntando essa informação com o comportamento de sincronização descrito acima (o terminal só baixa regras novas ao logar de novo), a leitura mais provável é que uma sessão em andamento no Point Smart não é encerrada de forma forçada e instantânea, e sim no próximo momento em que o dispositivo tentar sincronizar ou quando o operador fizer logout. A comparação com o comportamento da InfinitePay, que é explícito nesse ponto, está detalhada no card ao lado.</p>
         </div>
 
         <details class="why-box">
@@ -810,42 +815,44 @@
           </div>
           <span class="badge central"><svg class="badge-icon"><use href="#i-central"></use></svg>Backend centralizado (binário)</span>
         </div>
-        <p>Segundo concorrente nacional a fugir do padrão local. A InfinitePay na verdade tem <b>dois mecanismos com nomes parecidos e propósitos diferentes</b>, que vale separar com cuidado: <b>Modo Equipe</b>, que cria uma identidade própria para um vendedor dentro da conta, e <b>Modo Vendedor</b>, que é um travamento de tela num dispositivo já logado. Investigar essa diferença foi o que mais mudou o entendimento desta seção.</p>
+        <p>Segundo concorrente nacional a fugir do padrão local. A InfinitePay tem, na prática, <b>dois mecanismos com nomes parecidos e propósitos diferentes</b>: <b>Modo Equipe</b>, que cria uma identidade própria para um vendedor dentro da conta, e <b>Modo Vendedor</b>, que é um travamento de tela num dispositivo já autenticado como o titular. Separar os dois é essencial para entender como o controle de acesso realmente funciona aqui, e é o fio condutor desta seção.</p>
 
         <div class="detail-group">
-          <h4 class="detail-title"><span class="n">1</span>Onde a permissão é alterada</h4>
-          <p>Para cadastrar ou editar um vendedor do <b>Modo Equipe</b>: App InfinitePay &gt; menu "Vendas" &gt; deslizar até "Gestão de equipe" (em telas mais antigas aparece como "Sua Equipe") &gt; lista de vendedores, onde dá para adicionar, editar ou excluir. Tudo pelo app do dono, nunca no aparelho do vendedor.</p>
-          <p>Para configurar o <b>Modo Vendedor</b> na Maquininha Smart física: no próprio terminal, botão central inferior &gt; app "Vender" &gt; ícone de engrenagem (Configurações) &gt; "Seu PDV" &gt; ativar "Modo Vendedor" &gt; marcar quais funções ficam liberadas. Isso é feito no dispositivo físico em si, com a sessão já logada como titular, não no app do celular do dono.</p>
-          <div class="callout">Ou seja: uma configuração é feita remotamente pelo app (Modo Equipe), a outra é feita fisicamente no terminal compartilhado (Modo Vendedor). São dois pontos de configuração diferentes para dois problemas diferentes.</div>
+          <h4 class="detail-title"><span class="n">1</span>Modelo de identidade</h4>
+          <p>O <b>Modo Equipe</b> cria uma identidade individual de verdade: o vendedor tem CPF, e-mail e conta InfinitePay próprios, usados principalmente para vender pelo próprio celular via InfiniteTap. É o único ponto do produto em que existe autenticação por pessoa.</p>
+          <p>O <b>Modo Vendedor</b> não cria identidade nenhuma. Ele é aplicado a um dispositivo, seja um celular extra, seja a própria Maquininha Smart, que continua autenticado com a conta do <b>titular</b>; o modo apenas restringe a interface daquele aparelho a funções de venda. Quem usa o dispositivo não se identifica: o controle é por aparelho, não por pessoa.</p>
         </div>
 
         <div class="detail-group">
-          <h4 class="detail-title"><span class="n">2</span>Como funciona a granularidade</h4>
-          <p>A granularidade da InfinitePay é bem mais rasa que a do Mercado Pago, e não existe um sistema de categorias combinável nem roles nomeadas reutilizáveis. O que existe, com precisão:</p>
-          <p><b>Modo Equipe é binário por natureza.</b> Ao cadastrar um novo perfil, a única opção de papel documentada é "Vendedor ativo". Não há uma tela de "criar função" com toggles por categoria como no Mercado Pago: o pacote de permissões do Vendedor é fixo e padronizado pela própria InfinitePay (InfiniteTap, Pix, Link de Pagamento; nada de saldo, empréstimo ou alteração de conta). A única "personalização" possível é decidir se a pessoa é ou não é vendedor, não o que exatamente ela pode fazer dentro disso.</p>
-          <p><b>Modo Vendedor tem uma granularidade diferente, por função de venda, não por categoria de dado.</b> No terminal físico, o dono escolhe manualmente quais funcionalidades do app "Vender" ficam visíveis (por exemplo, mostrar ou esconder catálogo de produtos, relatórios do dia, ou outras opções da tela inicial). É uma lista de toggles de visibilidade de tela, não uma matriz de permissão sobre dados financeiros como as cinco categorias do Mercado Pago.</p>
-          <div class="callout">Comparando com a pergunta original: no Mercado Pago a granularidade é por categoria dentro de uma role reutilizável. Na InfinitePay não existe role reutilizável nomeada, existe um papel fixo (Vendedor) mais um conjunto de toggles de tela por dispositivo. São arquiteturas de permissão genuinamente diferentes, não a mesma ideia com nomes diferentes.</div>
+          <h4 class="detail-title"><span class="n">2</span>Fluxo de configuração</h4>
+          <p>Para cadastrar ou editar um vendedor do Modo Equipe: App InfinitePay &gt; menu "Vendas" &gt; "Gestão de equipe" (em telas mais antigas aparece como "Sua Equipe") &gt; lista de vendedores, com opção de adicionar, editar ou excluir. Todo esse fluxo acontece no app do dono, nunca no aparelho do vendedor.</p>
+          <p>Para configurar o Modo Vendedor na Maquininha Smart: diretamente no terminal físico, botão central inferior &gt; app "Vender" &gt; ícone de Configurações &gt; "Seu PDV" &gt; ativar "Modo Vendedor" &gt; marcar quais funções ficam liberadas. É uma configuração feita fisicamente no dispositivo compartilhado, não remotamente pelo celular do dono.</p>
         </div>
 
         <div class="detail-group">
-          <h4 class="detail-title"><span class="n">3</span>Bloqueio e casos de login</h4>
-          <p>Aqui está a descoberta mais importante desta rodada: o Modo Vendedor, no terminal físico e também num celular usado como maquininha, <b>não cria uma identidade própria para quem está vendendo</b>. Para ativar o Modo Vendedor num celular extra, por exemplo, o procedimento documentado é instalar o app da InfinitePay "com seu login e senha" (login do dono) e só depois ativar o Modo Vendedor, que passa a restringir a tela para mostrar só as funções de venda. Ou seja, o funcionário não loga com a própria conta nesse fluxo: ele usa um dispositivo que está autenticado como o dono, só que travado numa tela restrita.</p>
-          <p>Isso é bem diferente do Point Smart do Mercado Pago, onde cada operador loga com o próprio e-mail e senha. Na Maquininha Smart da InfinitePay, não encontrei nenhuma fonte oficial descrevendo uma tela de login individual por operador com PIN próprio. O controle de acesso ali é por dispositivo (travado ou não travado), não por pessoa autenticada.</p>
-          <p>Onde a identidade individual de fato existe é no <b>Modo Equipe</b> via InfiniteTap (o vendedor com seu próprio CPF, e-mail e conta InfinitePay, vendendo pelo próprio celular). Ali sim há um login pessoal, feito uma vez ao aceitar o convite. Não há evidência documentada de que esse login precise ser refeito periodicamente: o comportamento é o de uma sessão de app comum, que persiste até o vendedor sair ou até o dono revogar o acesso.</p>
-          <p>Sobre "a maquininha fica bloqueada sem login": isso não se aplica do mesmo jeito que no Mercado Pago. A Maquininha Smart funciona normalmente assim que ativada na conta do titular; o Modo Vendedor apenas restringe a tela, não impede a venda. O bloqueio de fato, o de não conseguir vender, existe é no lado do Modo Equipe: um vendedor excluído perde acesso e não pode continuar vendendo.</p>
+          <h4 class="detail-title"><span class="n">3</span>Estrutura e granularidade das permissões</h4>
+          <p>A granularidade aqui é bem mais rasa que a do Mercado Pago: não existe um sistema de categorias combináveis nem roles nomeadas reutilizáveis.</p>
+          <p>O Modo Equipe é binário por natureza: ao cadastrar um novo perfil, a única opção de papel documentada é "Vendedor ativo", com um pacote de permissões fixo e padronizado pela própria InfinitePay (InfiniteTap, Pix e Link de Pagamento; sem saldo, empréstimo ou alteração de conta). A única decisão configurável é se a pessoa é ou não vendedor, não o que exatamente ela pode fazer dentro disso.</p>
+          <p>O Modo Vendedor tem uma granularidade de natureza diferente, por função de venda visível na tela, não por categoria de dado: o dono escolhe manualmente quais funcionalidades do app "Vender" ficam disponíveis naquele dispositivo (catálogo de produtos, relatórios do dia, entre outras). É uma lista de toggles de visibilidade de tela, não uma matriz de permissão sobre dados financeiros como as cinco categorias do Mercado Pago.</p>
         </div>
 
         <div class="detail-group">
-          <h4 class="detail-title"><span class="n">4</span>Remoção de acesso</h4>
-          <p>Este ponto está documentado de forma direta e sem ambiguidade, o que não aconteceu com o Mercado Pago: <b>"Vendedores excluídos perdem o acesso imediatamente e não podem continuar usando a sessão ativa."</b> A remoção é feita pelo dono, remotamente, pelo app, a qualquer momento ("Revogue o acesso a qualquer momento"). Não é preciso acesso físico ao celular do vendedor nem à maquininha.</p>
-          <p>Isso inclui matar uma sessão que já está em andamento, não só bloquear logins futuros. É uma garantia mais forte do que qualquer coisa confirmada para o Mercado Pago.</p>
+          <h4 class="detail-title"><span class="n">4</span>Sincronização e comportamento de sessão</h4>
+          <p>No Modo Equipe, o login individual do vendedor acontece uma única vez, ao aceitar o convite. Depois disso, o comportamento é o de uma sessão de app comum: não há evidência documentada de que esse login precise ser refeito periodicamente, e a sessão persiste até o vendedor sair ou até o dono revogar o acesso.</p>
+          <p>No Modo Vendedor não existe, a rigor, um evento de "login de operador": o dispositivo já está autenticado como o titular desde antes, e ativar o modo só restringe o que aparece na tela. A Maquininha Smart funciona normalmente assim que ativada na conta do titular; o Modo Vendedor não impede vendas, apenas limita o que fica visível para quem estiver operando o aparelho naquele momento.</p>
+        </div>
+
+        <div class="detail-group">
+          <h4 class="detail-title"><span class="n">5</span>Remoção e revogação de acesso</h4>
+          <p>Este ponto está documentado de forma direta pela InfinitePay: <b>"Vendedores excluídos perdem o acesso imediatamente e não podem continuar usando a sessão ativa."</b> A remoção é feita pelo dono, remotamente, pelo app, a qualquer momento, sem necessidade de acesso físico ao celular do vendedor.</p>
+          <p>A revogação inclui encerrar uma sessão que já está em andamento, não apenas bloquear logins futuros. É uma garantia mais forte e mais explícita do que a documentada para o Mercado Pago, cujo comportamento equivalente está detalhado no card ao lado.</p>
         </div>
 
         <div class="contrast-box">
-          <h4 class="detail-title"><span class="n">⇄</span>Mercado Pago vs. InfinitePay: revogação de acesso</h4>
-          <p><b>Mercado Pago:</b> remove o acesso à conta na hora, mas o terminal físico só aplica a mudança quando o operador fecha a sessão e loga de novo. Uma sessão já ativa no Point Smart provavelmente sobrevive até o próximo login ou sincronização (leitura própria, não confirmada de forma explícita).</p>
+          <h4 class="detail-title"><span class="n">⇄</span>Comparação direta: revogação de acesso</h4>
+          <p><b>Mercado Pago:</b> remove o acesso à conta na hora, mas o terminal físico só aplica a mudança quando o operador fecha a sessão e loga de novo. O comportamento mais provável, embora não confirmado de forma explícita pelas fontes, é que uma sessão já ativa no Point Smart sobrevive até o próximo login ou sincronização.</p>
           <p><b>InfinitePay:</b> confirma de forma explícita que a sessão ativa é encerrada na hora, mesmo em andamento.</p>
-          <p>Hipótese para a diferença: o Point Smart foi desenhado para aguentar operar offline em campo (tem inclusive "modo offline" documentado), o que exige cache local de permissão e favorece revogação por sincronização. O Modo Equipe da InfinitePay depende do celular do vendedor estar sempre conectado para processar qualquer venda via InfiniteTap, o que permite validar a permissão em tempo real a cada transação, sem cache local para revogar depois. É exatamente o trade-off "autenticação offline vs. revogação em tempo real" que está registrado na seção de Considerações de Arquitetura.</p>
+          <p>Uma explicação plausível para a diferença: o Point Smart foi desenhado para operar offline em campo (há inclusive um "modo offline" documentado), o que exige cache local de permissão e favorece revogação por sincronização. Já o Modo Equipe da InfinitePay depende do celular do vendedor estar sempre conectado para processar qualquer venda via InfiniteTap, o que permite validar a permissão em tempo real a cada transação, sem necessidade de cache local. É o mesmo trade-off entre autenticação offline e revogação em tempo real registrado na seção de Considerações de Arquitetura.</p>
         </div>
 
         <details class="why-box">
@@ -1138,6 +1145,26 @@
         <p>Registro de versões desta documentação. Cada rodada de pesquisa ou decisão vira uma entrada aqui.</p>
       </div>
       <div class="changelog">
+        <div class="change-entry">
+          <div class="change-head"><span class="change-version">v1.5</span><span class="change-date">13 ago 2026</span></div>
+          <p>Remoção de todas as referências à empresa e ao time interno, deixando o documento como uma pesquisa de mercado genérica sobre gestão de usuários em POS.</p>
+          <ul>
+            <li>Removido o nome da empresa de: marca da sidebar, hero, rodapé, seção Visão Geral, seção de Perfis, seção de Arquitetura e duas notas de considerações de arquitetura</li>
+            <li>Removida a citação direta da provocação do time executivo (mantido apenas o termo genérico "time executivo", sem o texto literal da pergunta interna)</li>
+            <li>Removido o parágrafo que descrevia o documento como registro de um desenvolvimento de feature específico</li>
+            <li>Removido o chip "Time Front · Flutter POS", que expunha stack e estrutura organizacional interna</li>
+            <li>Atribuição trocada para "Made by João Campos" na sidebar e no rodapé</li>
+          </ul>
+        </div>
+        <div class="change-entry">
+          <div class="change-head"><span class="change-version">v1.4</span><span class="change-date">13 ago 2026</span></div>
+          <p>Reorganização didática dos cards de Mercado Pago e InfinitePay: conteúdo estava estruturado como resposta direta a perguntas pontuais, sem coesão para quem lê sem esse contexto.</p>
+          <ul>
+            <li>Os quatro blocos de cada card foram reorganizados em uma narrativa de cinco partes: modelo de identidade, fluxo de configuração, estrutura e granularidade das permissões, sincronização e comportamento de sessão, remoção e revogação de acesso</li>
+            <li>Removida linguagem conversacional ("achado importante", "descoberta desta rodada") em favor de redação de documentação neutra</li>
+            <li>Caixa de comparação entre os dois concorrentes mantida, com redação revisada para leitura independente</li>
+          </ul>
+        </div>
         <div class="change-entry">
           <div class="change-head"><span class="change-version">v1.3</span><span class="change-date">13 ago 2026</span></div>
           <p>Aprofundamento total das seções de Mercado Pago e InfinitePay, provocado por perguntas específicas sobre onde a permissão é alterada, como funciona a granularidade e o comportamento de bloqueio e login em cada uma.</p>
