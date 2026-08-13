@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestão de Usuários POS: Documentação do Projeto</title>
+<style>
+  :root{
+    /* ---- color tokens: paleta oficial BTG Pactual (brand guidelines) ---- */
+    --ink: #05132a;
+    --ink-2: #0b2859;
+    --ink-3: #10408d;
+    --paper: #f7f9fc;
+    --paper-2: #eef3fb;
+    --paper-3: #dee9fa;
+    --line: rgba(5,19,42,0.12);
+    --line-soft: rgba(5,19,42,0.07);
+    --text: #0b1830;
+    --text-muted: #4d5c78;
+    --text-faint: #8a93a8;
+    --on-ink: #eef3fb;
+    --on-ink-muted: #93a6c9;
+
+    --brand: #195ab4;
+    --brand-strong: #10408d;
+    --brand-soft: #d2e5ff;
+    --brand-line: #87baff;
+
+    --local: #c2373f;
+    --local-bg: #fbe3e4;
+    --local-line: #f2acb0;
+
+    --central: #128850;
+    --central-bg: #dcf0e5;
+    --central-line: #9dd8bc;
+
+    --hybrid: #a37e2b;
+    --hybrid-bg: #fbeecb;
+    --hybrid-line: #e8b73d;
+
+    /* ---- type tokens ---- */
+    /* A Moderat (tipografia oficial BTG) é licenciada e não pode ser incorporada aqui.
+       Stack de sistema geométrica equivalente, sem dependência de internet. */
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Roboto, Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
+
+    --sidebar-w: 296px;
+  }
+
+  *,*::before,*::after{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0;
+    background: var(--paper);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection{ background: var(--brand-soft); color: var(--ink); }
+
+  a{ color: var(--brand); text-decoration-color: var(--brand-line); text-underline-offset: 3px; }
+  a:hover{ color: var(--ink); }
+  a:focus-visible, button:focus-visible, summary:focus-visible{
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  h1,h2,h3,h4{ font-family: var(--font-sans); color: var(--ink); font-weight: 300; letter-spacing: -0.01em; margin: 0; }
+  h3, h4{ font-weight: 700; }
+  code, .mono{ font-family: var(--font-mono); }
+
+  /* ================= LAYOUT ================= */
+  .app{
+    display: grid;
+    grid-template-columns: var(--sidebar-w) minmax(0,1fr);
+    min-height: 100vh;
+  }
+
+  /* ================= SIDEBAR ================= */
+  .sidebar{
+    background: var(--ink);
+    color: var(--on-ink);
+    position: sticky;
+    top:0;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 28px 22px 40px;
+    border-right: 1px solid rgba(255,255,255,0.06);
+  }
+  .sidebar::-webkit-scrollbar{ width:8px; }
+  .sidebar::-webkit-scrollbar-thumb{ background: rgba(255,255,255,0.14); border-radius: 8px; }
+
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom: 6px;
+  }
+  .brand-mark{ width:30px; height:30px; flex-shrink:0; }
+  .brand-text{ font-family: var(--font-sans); font-weight: 300; font-size: 17px; color:#fff; line-height:1.25; }
+  .brand-text small{ display:block; font-family: var(--font-sans); font-size: 11px; color: var(--on-ink-muted); font-weight:500; letter-spacing:.03em; text-transform:uppercase; margin-top:2px;}
+
+  .sidebar-meta{
+    margin: 18px 0 26px;
+    padding: 12px 14px;
+    background: rgba(255,255,255,0.045);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    font-size: 12.5px;
+    color: var(--on-ink-muted);
+  }
+  .sidebar-meta div + div{ margin-top:6px; }
+  .sidebar-meta b{ color: var(--on-ink); font-weight:600; }
+  .status-dot{ display:inline-block; width:7px; height:7px; border-radius:50%; background:#549cff; margin-right:6px; box-shadow: 0 0 0 3px rgba(84,156,255,0.22); }
+
+  nav.toc{ font-size: 13.5px; font-family: var(--font-sans); }
+  nav.toc .toc-group{ margin-bottom: 4px; }
+  nav.toc .toc-label{
+    text-transform: uppercase;
+    font-size: 10.5px;
+    letter-spacing: .08em;
+    color: rgba(255,255,255,0.35);
+    font-weight: 700;
+    margin: 22px 2px 8px;
+  }
+  nav.toc a{
+    display:block;
+    color: var(--on-ink-muted);
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 7px;
+    margin: 1px 0;
+    border-left: 2px solid transparent;
+    transition: background .12s ease, color .12s ease;
+  }
+  nav.toc a:hover{ background: rgba(255,255,255,0.055); color:#fff; }
+  nav.toc a.active{ background: rgba(48,122,224,0.18); color: #d2e5ff; border-left-color: #549cff; font-weight:600; }
+  nav.toc a.sub{ padding-left: 22px; font-size: 12.5px; }
+  nav.toc a.sub::before{ content: "\2022"; margin-right:8px; opacity:.5; }
+
+  .sidebar-foot{
+    margin-top: 28px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    font-size: 11.5px;
+    color: rgba(255,255,255,0.32);
+    line-height:1.6;
+  }
+
+  .nav-toggle{ display:none; }
+
+  /* ================= MAIN ================= */
+  main{ min-width:0; }
+
+  .hero-stripe{
+    height: 6px;
+    width: 100%;
+    background: linear-gradient(90deg, #05132a 0%, #10408d 22%, #195ab4 45%, #307ae0 68%, #6baaff 86%, #b1d2ff 100%);
+  }
+  .hero{
+    padding: 64px 64px 46px;
+    border-bottom: 1px solid var(--line);
+    background:
+      radial-gradient(1200px 380px at 82% -10%, rgba(173,127,40,0.09), transparent 60%),
+      var(--paper);
+    position: relative;
+    overflow:hidden;
+  }
+  .hero-kicker{
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--brand-strong);
+    display:flex; align-items:center; gap:10px;
+    margin-bottom: 18px;
+  }
+  .hero-kicker .rule{ width:34px; height:1px; background: var(--brand-line); }
+  .hero h1{ font-size: 40px; line-height:1.12; max-width: 15ch; }
+  .hero p.lede{
+    max-width: 62ch;
+    font-size: 17px;
+    color: var(--text-muted);
+    margin-top: 16px;
+  }
+  .hero-chips{ display:flex; flex-wrap:wrap; gap:9px; margin-top:26px; }
+  .chip{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 12px;
+    padding: 6px 11px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--text-muted);
+  }
+  .chip b{ color: var(--ink); font-weight:600; }
+
+  .hero-topology{
+    position:absolute;
+    right: 48px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 230px;
+    opacity: .9;
+  }
+  @media (max-width: 1180px){ .hero-topology{ display:none; } }
+
+  section{ padding: 64px; border-bottom: 1px solid var(--line); max-width: 980px; }
+  section:last-of-type{ border-bottom:none; }
+
+  .section-head{ margin-bottom: 34px; }
+  .section-eyebrow{
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 11.5px;
+    letter-spacing:.08em;
+    text-transform: uppercase;
+    color: var(--brand-strong);
+    margin-bottom:10px;
+    display:block;
+  }
+  .section-head h2{ font-size: 29px; }
+  .section-head p{ color: var(--text-muted); max-width: 68ch; margin-top:12px; font-size:15.5px; }
+
+  .prose p{ max-width: 72ch; color: var(--text); margin: 0 0 14px; }
+  .prose p.muted{ color: var(--text-muted); }
+
+  blockquote.exec{
+    margin: 22px 0 30px;
+    padding: 18px 22px;
+    background: var(--paper-2);
+    border-left: 3px solid var(--brand);
+    border-radius: 4px;
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 1.5;
+    color: var(--ink-3);
+    max-width: 68ch;
+  }
+  blockquote.exec cite{ display:block; margin-top:10px; font-family: var(--font-sans); font-weight: 600; font-style:normal; font-size:12.5px; color: var(--text-faint); }
+
+  /* ---------- status badges ---------- */
+  .badge{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 11.5px;
+    padding: 4px 10px 4px 8px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    white-space:nowrap;
+  }
+  .badge svg{ width:13px; height:13px; }
+  .badge.local{ background: var(--local-bg); color: var(--local); border-color: var(--local-line); }
+  .badge.central{ background: var(--central-bg); color: var(--central); border-color: var(--central-line); }
+  .badge.hybrid{ background: var(--hybrid-bg); color: var(--hybrid); border-color: var(--hybrid-line); }
+
+  /* ---------- competitor cards ---------- */
+  .competitor{
+    border: 1px solid var(--line);
+    background: #fff;
+    border-radius: 14px;
+    padding: 28px 30px;
+    margin-bottom: 22px;
+    scroll-margin-top: 24px;
+  }
+  .competitor-head{
+    display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap;
+    margin-bottom: 14px;
+  }
+  .competitor-head h3{ font-size: 21px; }
+  .competitor-head .sub{ font-size:13px; color:var(--text-faint); margin-top:3px; font-family: var(--font-sans); }
+  .competitor p{ max-width: 70ch; color: var(--text); font-size:15px; }
+  .competitor ul.facts{ margin: 14px 0 6px; padding:0; list-style:none; display:grid; gap:9px; }
+  .competitor ul.facts li{
+    font-size: 14.5px;
+    padding-left: 18px;
+    position:relative;
+    color: var(--text);
+  }
+  .competitor ul.facts li::before{
+    content:"";
+    position:absolute; left:0; top:8px;
+    width:6px; height:6px; border-radius:1px;
+    background: var(--brand-line);
+    transform: rotate(45deg);
+  }
+  .sources{ margin-top:18px; padding-top:14px; border-top:1px dashed var(--line); }
+  .sources-label{ font-family: var(--font-sans); font-weight: 600; font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin-bottom:8px; display:block; }
+  .sources .src-item{ display:inline-block; margin-right:16px; margin-bottom:8px; font-size: 13px; }
+  .sources .src-date{ font-family: var(--font-mono); font-size: 11px; color: var(--text-faint); margin-left:5px; }
+  .sources .src-date.stale{ color: var(--local); font-weight:600; }
+
+  .why-box{
+    margin-top: 18px;
+    background: var(--paper-2);
+    border: 1px solid var(--brand-line);
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+  .why-box summary{
+    cursor:pointer;
+    list-style:none;
+    display:flex;
+    align-items:center;
+    gap:9px;
+    font-weight:700;
+    font-size: 14px;
+    color: var(--brand-strong);
+  }
+  .why-box summary::-webkit-details-marker{ display:none; }
+  .why-box summary::before{
+    content:"?";
+    display:inline-flex; align-items:center; justify-content:center;
+    width:19px; height:19px; border-radius:50%;
+    background: var(--brand); color:#fff;
+    font-size:12px; font-weight:700; flex-shrink:0;
+  }
+  .why-box[open] summary{ margin-bottom:10px; }
+  .why-box p{ font-size: 14px; color: var(--text); margin:0 0 8px; }
+  .why-box p:last-child{ margin-bottom:0; }
+  .why-box .why-tag{ font-family: var(--font-sans); font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color: var(--brand-strong); }
+
+  /* ---------- tables (segue o guia BTG: header em bold, corpo em regular, linha de header com o dobro da espessura) ---------- */
+  .table-wrap{ overflow-x:auto; border:1px solid var(--line); border-radius:12px; }
+  table{ border-collapse: collapse; width:100%; min-width:720px; background:#fff; font-size: 14px; font-family: var(--font-sans); }
+  thead th{
+    text-align:left;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing:.02em;
+    color: var(--on-ink);
+    background: var(--ink);
+    padding: 12px 16px;
+    border-bottom: 3px solid var(--brand);
+    position: sticky; top:0;
+  }
+  tbody td{ padding: 13px 16px; border-top: 1px solid var(--line-soft); vertical-align:top; font-weight: 400; }
+  tbody tr:hover{ background: var(--paper-2); }
+  tbody td:first-child{ font-weight:700; color: var(--ink); white-space:nowrap; }
+
+  .filters{ display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
+  .filter-btn{
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size:12px;
+    padding:7px 13px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background:#fff;
+    color: var(--text-muted);
+    cursor:pointer;
+  }
+  .filter-btn:hover{ border-color: var(--brand-line); color: var(--ink); }
+  .filter-btn.is-active{ background: var(--ink); color:#fff; border-color: var(--ink); }
+
+  /* ---------- profile matrix ---------- */
+  .profile-grid{ display:grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin-top:20px; }
+  .profile-card{ border:1px solid var(--line); border-radius:12px; padding:20px; background:#fff; }
+  .profile-card h4{ font-size:15px; display:flex; align-items:center; gap:8px; }
+  .profile-card .dot{ width:9px; height:9px; border-radius:50%; }
+  .profile-card ul{ margin:12px 0 0; padding-left:18px; font-size:13.5px; color:var(--text-muted); }
+  .profile-card ul li{ margin-bottom:6px; }
+
+  /* ---------- architecture cards ---------- */
+  .arch-grid{ display:grid; grid-template-columns: repeat(auto-fit,minmax(300px,1fr)); gap:18px; margin-top:8px; }
+  .arch-card{ border:1px solid var(--line); border-radius:12px; padding:22px; background:#fff; }
+  .arch-card .idx{ font-family:var(--font-mono); font-size:12px; color:var(--brand-strong); margin-bottom:8px; display:block; }
+  .arch-card h4{ font-size:16px; margin-bottom:9px; }
+  .arch-card p{ font-size:13.8px; color:var(--text-muted); margin:0 0 10px; }
+  .arch-card .note{ font-size:12.8px; background:var(--paper-2); border-radius:8px; padding:9px 11px; color:var(--ink-3); }
+
+  /* ---------- glossary ---------- */
+  .glossary-search{
+    width:100%; max-width:420px;
+    padding: 11px 14px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    background:#fff;
+    margin-bottom: 26px;
+  }
+  .glossary-search:focus{ outline:none; border-color:var(--brand-line); box-shadow:0 0 0 3px var(--brand-soft); }
+  dl.glossary{ display:grid; gap:0; border-top:1px solid var(--line); }
+  dl.glossary .term-row{ display:grid; grid-template-columns: 220px 1fr; gap:24px; padding:16px 0; border-bottom:1px solid var(--line-soft); }
+  dl.glossary dt{ font-family: var(--font-sans); font-weight:700; color:var(--ink); font-size:14.5px; }
+  dl.glossary dt .abbr{ display:block; font-family: var(--font-sans); font-weight:400; font-size:11.5px; color:var(--text-faint); margin-top:3px; }
+  dl.glossary dd{ margin:0; font-size:14.5px; color:var(--text-muted); }
+  .term-row.hidden{ display:none; }
+
+  /* ---------- changelog ---------- */
+  .changelog{ position:relative; margin-top:10px; padding-left:26px; }
+  .changelog::before{ content:""; position:absolute; left:6px; top:6px; bottom:6px; width:1px; background: var(--line); }
+  .change-entry{ position:relative; padding-bottom:26px; }
+  .change-entry:last-child{ padding-bottom:0; }
+  .change-entry::before{
+    content:""; position:absolute; left:-26px; top:4px; width:11px; height:11px; border-radius:50%;
+    background: var(--paper); border:2px solid var(--brand); z-index:1;
+  }
+  .change-head{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:6px; }
+  .change-version{ font-family: var(--font-mono); font-weight:700; color:var(--ink); font-size:14px; }
+  .change-date{ font-family: var(--font-mono); font-size:12px; color:var(--text-faint); }
+  .change-entry p{ font-size:14px; color:var(--text-muted); max-width:64ch; margin:0; }
+  .change-entry ul{ margin:8px 0 0; padding-left:18px; font-size:13.5px; color:var(--text-muted); }
+
+  footer.doc-foot{
+    padding: 40px 64px 60px;
+    color: var(--text-faint);
+    font-size: 12.5px;
+    max-width:980px;
+  }
+
+  @media print{
+    .sidebar{ display:none; }
+    .app{ display:block; }
+    section{ break-inside: avoid; }
+  }
+
+  @media (max-width: 920px){
+    :root{ --sidebar-w: 0px; }
+    .app{ grid-template-columns: 1fr; }
+    .sidebar{
+      position: fixed; z-index: 40; left:0; top:0; width: 78vw; max-width:320px;
+      transform: translateX(-100%);
+      transition: transform .2s ease;
+      box-shadow: 20px 0 40px rgba(0,0,0,0.3);
+    }
+    .sidebar.open{ transform: translateX(0); }
+    .nav-toggle{
+      display:flex; align-items:center; gap:8px;
+      position: fixed; top:16px; left:16px; z-index:50;
+      background: var(--ink); color:#fff; border:none;
+      padding:10px 14px; border-radius:999px;
+      font-family: var(--font-sans); font-weight:600; font-size:13px;
+      cursor:pointer;
+    }
+    .hero{ padding: 92px 24px 36px; }
+    section{ padding: 44px 24px; }
+    footer.doc-foot{ padding: 30px 24px 50px; }
+    dl.glossary .term-row{ grid-template-columns: 1fr; gap:4px; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-local" viewBox="0 0 14 14">
+      <circle cx="3" cy="3" r="2" fill="currentColor"/>
+      <circle cx="11" cy="3" r="2" fill="currentColor"/>
+      <circle cx="7" cy="11" r="2" fill="currentColor"/>
+    </symbol>
+    <symbol id="i-central" viewBox="0 0 14 14">
+      <path d="M7 7 2 2M7 7 12 2M7 7 2 12" stroke="currentColor" stroke-width="1.1"/>
+      <circle cx="7" cy="7" r="2.3" fill="currentColor"/>
+      <circle cx="2" cy="2" r="1.3" fill="currentColor"/>
+      <circle cx="12" cy="2" r="1.3" fill="currentColor"/>
+      <circle cx="2" cy="12" r="1.3" fill="currentColor"/>
+    </symbol>
+    <symbol id="i-hybrid" viewBox="0 0 14 14">
+      <path d="M7 7 2 2" stroke="currentColor" stroke-width="1.1"/>
+      <circle cx="7" cy="7" r="2" fill="currentColor"/>
+      <circle cx="2" cy="2" r="1.3" fill="currentColor"/>
+      <circle cx="12" cy="12" r="1.3" fill="none" stroke="currentColor" stroke-width="1.1"/>
+    </symbol>
+  </defs>
+</svg>
+
+<button class="nav-toggle" id="navToggle" aria-label="Abrir menu">☰ Índice</button>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="16" cy="16" r="12" fill="none" stroke="#549cff" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="62 13" transform="rotate(-18 16 16)"/>
+        <circle cx="16" cy="16" r="3" fill="#549cff"/>
+      </svg>
+      <div class="brand-text">Gestão de Usuários<br>POS<small>BTGPay · Documentação viva</small></div>
+    </div>
+
+    <div class="sidebar-meta">
+      <div><span class="status-dot"></span><b>Fase atual:</b> Levantamento de mercado</div>
+      <div><b>Versão:</b> <span class="mono">v1.1</span></div>
+      <div><b>Última atualização:</b> 13 ago 2026</div>
+    </div>
+
+    <nav class="toc" id="tocNav">
+      <div class="toc-group">
+        <a href="#visao-geral">Visão geral</a>
+      </div>
+
+      <div class="toc-label">Levantamento de mercado</div>
+      <div class="toc-group">
+        <a href="#mercado">Introdução &amp; método</a>
+        <a class="sub" href="#cielo">Cielo</a>
+        <a class="sub" href="#getnet">GetNet</a>
+        <a class="sub" href="#rede">Rede / Sipag</a>
+        <a class="sub" href="#pagbank">PagBank</a>
+        <a class="sub" href="#stone">Stone</a>
+        <a class="sub" href="#mercadopago">Mercado Pago</a>
+        <a class="sub" href="#infinitepay">InfinitePay</a>
+        <a class="sub" href="#internacionais">Square, Clover &amp; SumUp</a>
+      </div>
+
+      <div class="toc-label">Análise</div>
+      <div class="toc-group">
+        <a href="#comparativo">Comparativo entre concorrentes</a>
+        <a href="#perfis">Perfis de acesso típicos</a>
+        <a href="#arquitetura">Considerações de arquitetura</a>
+      </div>
+
+      <div class="toc-label">Referência</div>
+      <div class="toc-group">
+        <a href="#glossario">Glossário</a>
+        <a href="#historico">Histórico de revisões</a>
+      </div>
+    </nav>
+
+    <div class="sidebar-foot">
+      Documento vivo, atualizado conforme o projeto avança: do levantamento inicial até a entrega da feature de Gestão de Usuários da POS.
+    </div>
+  </aside>
+
+  <main>
+    <div class="hero-stripe" aria-hidden="true"></div>
+    <div class="hero">
+      <div class="hero-kicker"><span class="rule"></span> Projeto POS · Gestão de Usuários</div>
+      <h1>Fonte da verdade do projeto</h1>
+      <p class="lede">Registro contínuo da pesquisa, das comparações de mercado e das decisões de arquitetura para a feature de Gestão de Usuários da POS própria do BTGPay: do levantamento inicial até a entrega.</p>
+      <div class="hero-chips">
+        <span class="chip"><b>10</b>&nbsp;concorrentes mapeados</span>
+        <span class="chip"><b>25</b>&nbsp;termos no glossário</span>
+        <span class="chip">Time Front · Flutter POS</span>
+      </div>
+
+      <svg class="hero-topology" viewBox="0 0 220 200" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g opacity="0.95">
+          <circle cx="34" cy="30" r="14" fill="none" stroke="#c2373f" stroke-width="1.6"/>
+          <circle cx="34" cy="86" r="14" fill="none" stroke="#c2373f" stroke-width="1.6"/>
+          <circle cx="34" cy="142" r="14" fill="none" stroke="#c2373f" stroke-width="1.6"/>
+          <text x="34" y="34" font-family="-apple-system,Segoe UI,Arial,sans-serif" font-weight="600" font-size="10" fill="#c2373f" text-anchor="middle">POS</text>
+          <text x="34" y="90" font-family="-apple-system,Segoe UI,Arial,sans-serif" font-weight="600" font-size="10" fill="#c2373f" text-anchor="middle">POS</text>
+          <text x="34" y="146" font-family="-apple-system,Segoe UI,Arial,sans-serif" font-weight="600" font-size="10" fill="#c2373f" text-anchor="middle">POS</text>
+        </g>
+        <g opacity="0.95">
+          <circle cx="176" cy="20" r="11" fill="none" stroke="#128850" stroke-width="1.6"/>
+          <circle cx="176" cy="70" r="11" fill="none" stroke="#128850" stroke-width="1.6"/>
+          <circle cx="176" cy="120" r="11" fill="none" stroke="#128850" stroke-width="1.6"/>
+          <circle cx="176" cy="170" r="16" fill="#195ab4"/>
+          <text x="176" y="174" font-family="-apple-system,Segoe UI,Arial,sans-serif" font-weight="700" font-size="9.5" fill="#fff" text-anchor="middle">API</text>
+          <path d="M176 31 176 154M176 81 176 154M176 131 176 154" stroke="#128850" stroke-width="1.3"/>
+        </g>
+      </svg>
+    </div>
+
+    <section id="visao-geral">
+      <div class="section-head">
+        <span class="section-eyebrow">01 · Contexto</span>
+        <h2>Visão geral</h2>
+        <p>Por que este documento existe e o que ele deve conter enquanto o projeto avança.</p>
+      </div>
+      <div class="prose">
+        <p>Este documento nasceu de uma provocação do time executivo do BTGPay durante o desenho do app de <b>Gestão de Usuários</b> da nossa POS própria: a hipótese de que os concorrentes fazem gestão de operador de forma isolada, POS por POS, e de que valeria a pena construir um backend que integrasse essa gestão entre todas as maquininhas de um mesmo lojista.</p>
+        <p class="muted">A ideia é usar esta página como fonte única de verdade do projeto. Não só da pesquisa de mercado, mas de tudo que vier depois: decisões de arquitetura, definição de perfis e permissões, discussões de UX e, futuramente, o registro da própria feature entregue. Cada rodada de conversa deve virar uma atualização aqui, com controle de versão no changelog ao final da página.</p>
+      </div>
+      <blockquote class="exec">
+        "Acreditamos que todos os concorrentes do mercado utilizam a gestão de usuário localmente na POS, ou seja, caso o lojista tenha mais de uma POS, é uma gestão individual para cada uma, não integradas. Seria possível colocarmos um backend integrando essa gestão de usuários entre as POS, poupando essa configuração uma a uma?"
+        <cite>Provocação do time executivo, ponto de partida da pesquisa</cite>
+      </blockquote>
+
+      <div class="prose" style="margin-top:26px;">
+        <p style="font-weight:700; color:var(--ink);">Nota sobre a atualidade das fontes</p>
+        <p class="muted">Toda fonte usada nesta pesquisa foi checada quanto à data de publicação ou última atualização, quando essa informação estava disponível. O mês e o ano aparecem ao lado de cada link, na caixa "Fontes" de cada card. Quando não foi possível confirmar uma data (por exemplo, centrais de ajuda que não expõem essa informação), isso também está sinalizado explicitamente, em vez de presumir que o conteúdo é recente. Duas fontes se mostraram bem mais antigas que as demais (uma de 2022 e uma de 2020, ambas na seção Rede / Sipag) e um manual de desenvolvedor da Cielo estava com o portal congelado desde 24/06/2026, migrado para um novo endereço. Isso não invalida a conclusão sobre arquitetura local (é uma característica estrutural do hardware, não algo que muda de mês a mês), mas vale reconfirmar detalhes operacionais específicos antes de qualquer decisão crítica de produto.</p>
+      </div>
+    </section>
+
+    <section id="mercado">
+      <div class="section-head">
+        <span class="section-eyebrow">02 · Levantamento de mercado</span>
+        <h2>Como os concorrentes fazem gestão de usuários</h2>
+        <p>Pesquisa de campo sobre 10 concorrentes: adquirentes tradicionais brasileiros, players nativos digitais e referências internacionais de POS cloud-native. Cada card resume o modelo, como funciona na prática, por que o concorrente provavelmente escolheu esse caminho, e as fontes usadas.</p>
+      </div>
+
+      <div class="prose">
+        <p class="muted">Metodologia: pesquisa via documentação oficial de ajuda, manuais de terminal, apps e material técnico publicamente disponível, realizada em agosto de 2026. Como esse mercado muda de versão com frequência, trate os detalhes operacionais (menus, nomes de botões) como um retrato do momento da pesquisa. Vale reconfirmar antes de uma decisão crítica de produto.</p>
+      </div>
+
+      <article class="competitor" id="cielo">
+        <div class="competitor-head">
+          <div>
+            <h3>Cielo</h3>
+            <div class="sub">Maquininha LIO / Smart · adquirente tradicional</div>
+          </div>
+          <span class="badge local"><svg class="badge-icon"><use href="#i-local"></use></svg>Local por terminal</span>
+        </div>
+        <p>A senha de operador e a senha de supervisor são cadastradas diretamente em cada terminal físico. A senha de supervisor é exigida para cancelamento de vendas e para o cadastro de novos operadores, tudo feito máquina por máquina.</p>
+        <ul class="facts">
+          <li>Existe um app separado, "Cielo Gestão", com perfis <b>Administrador, Analista, Visualizador e Personalizado</b>. Esses perfis controlam o acesso ao dashboard financeiro e aos canais digitais, não o login no terminal físico.</li>
+          <li>A Cielo Smart (linha Android aberta) tem loja pública e loja privada de apps: já existe alguma forma de gestão de frota e deploy de aplicativo, mas isso é camada de <i>dispositivo</i>, não de <i>usuário</i>.</li>
+          <li>Troca de senha de perfis administrativos pode ser feita com biometria facial no app.</li>
+        </ul>
+        <details class="why-box">
+          <summary>Por que eles fazem assim?</summary>
+          <p>A certificação de segurança dos terminais (PCI PTS) é feita por equipamento e por bandeira de cartão, não por conta na nuvem: cada modelo de maquininha precisa da sua própria homologação. Isso favorece uma arquitetura em que a lógica de autenticação do operador vive dentro do próprio hardware certificado, em vez de depender de um serviço externo. A Cielo Smart também é descrita pela própria Cielo como evolução de terminais pensados para operar em campo com conectividade limitada (Wi-Fi, 3G/4G), o que reforça o design local first como decisão estrutural, não como um descuido.</p>
+          <p class="why-tag">Leitura própria com base em fontes públicas sobre certificação PCI por equipamento, não uma declaração da Cielo.</p>
+        </details>
+        <div class="sources">
+          <span class="sources-label">Fontes</span>
+          <span class="src-item"><a href="https://www.idinheiro.com.br/negocios/senha-do-supervisor-cielo/" target="_blank" rel="noopener">Senha Supervisor Cielo, idinheiro.com.br</a><span class="src-date">set 2025</span></span>
+          <span class="src-item"><a href="https://blog.cielo.com.br/produtos-e-servicos/validacao-de-dados-cadastrais/" target="_blank" rel="noopener">Validação de dados cadastrais, blog.cielo.com.br</a><span class="src-date">abr 2026</span></span>
+          <span class="src-item"><a href="https://developercielo.github.io/manual/cielo-lio" target="_blank" rel="noopener">Manual de integração Cielo LIO (portal antigo)</a><span class="src-date stale">congelado desde 24/06/2026, migrado para docs.cielo.com.br</span></span>
+        </div>
+      </article>
+
+      <article class="competitor" id="getnet">
+        <div class="competitor-head">
+          <div>
+            <h3>GetNet</h3>
+            <div class="sub">Grupo Santander · adquirente tradicional</div>
+          </div>
+          <span class="badge local"><svg class="badge-icon"><use href="#i-local"></use></svg>Local por terminal</span>
+        </div>
+        <p>Cadastro de operador e senha de supervisor configurados diretamente no menu do terminal, com senha padrão de fábrica por modelo (por exemplo, 1111 ou 0000).</p>
+        <ul class="facts">
+          <li>O app Getnet Brasil permite criar logins com restrições vinculados à conta, mas é voltado a acesso financeiro e conta digital, não à autenticação no POS.</li>
+          <li>Sem evidência de sincronização de operador entre terminais diferentes do mesmo lojista.</li>
+        </ul>
+        <details class="why-box">
+          <summary>Por que eles fazem assim?</summary>
+          <p>A GetNet pertence ao Santander e herda a mesma geração de hardware de terminal usada por outros adquirentes tradicionais, fabricado por empresas terceiras como PAX e Ingenico, com firmware fechado e certificação por dispositivo. Essa plataforma de terminal foi originalmente desenhada para funcionar de forma autônoma em conexões GPRS instáveis, então a senha do lojista viver dentro do próprio equipamento era, historicamente, a única opção viável.</p>
+          <p class="why-tag">Leitura própria com base no padrão de mercado de terminais PAX/Ingenico, não uma declaração da GetNet.</p>
+        </details>
+        <div class="sources">
+          <span class="sources-label">Fontes</span>
+          <span class="src-item"><a href="https://site.getnet.com.br/get-ajuda-cadastro/como-redefinir-a-senha-aplicativo/" target="_blank" rel="noopener">Redefinir senha, Getnet</a><span class="src-date">jan 2026</span></span>
+          <span class="src-item"><a href="https://site.getnet.com.br/wp-content/uploads/2024/01/Manul_GetClassica.pdf" target="_blank" rel="noopener">Manual Get Clássica (PDF oficial Getnet)</a><span class="src-date">publicado no site desde jan 2024</span></span>
+        </div>
+      </article>
+
+      <article class="competitor" id="rede">
+        <div class="competitor-head">
+          <div>
+            <h3>Rede / Sipag</h3>
+            <div class="sub">Grupo Itaú · adquirente tradicional</div>
+          </div>
+          <span class="badge local"><svg class="badge-icon"><use href="#i-local"></use></svg>Local por terminal</span>
+        </div>
+        <p>Cada terminal vem com senha padrão própria (por exemplo, 1111), trocada e cadastrada individualmente por máquina. O cadastro de operador é feito pelo menu "Manutenção" diretamente no aparelho.</p>
+        <ul class="facts">
+          <li>Não foi encontrada nenhuma camada de conta digital equivalente à da Cielo ou da Stone para perfis de acesso. A gestão parece inteiramente local.</li>
+        </ul>
+        <details class="why-box">
+          <summary>Por que eles fazem assim?</summary>
+          <p>Mesmo raciocínio dos outros adquirentes tradicionais: terminal herdado de fabricante terceiro, pensado para operar sozinho. O próprio manual da Sipag usado nesta pesquisa é de novembro de 2020, época em que "maquininha" ainda era sinônimo de dispositivo standalone no mercado brasileiro, sem expectativa de conta digital integrada.</p>
+          <p class="why-tag">Leitura própria a partir da data do manual oficial, não uma declaração da Rede.</p>
+        </details>
+        <div class="sources">
+          <span class="sources-label">Fontes</span>
+          <span class="src-item"><a href="https://finanzero.com.br/blog/como-cadastrar-senha-administrativa-na-maquininha-rede/" target="_blank" rel="noopener">Senha administrativa Rede, FinanZero</a><span class="src-date stale">ago 2022, fonte antiga</span></span>
+          <span class="src-item"><a href="https://www.sipag.com.br/arquivos/Guias/Guia_Operacional_Maquininha_Sipag.pdf" target="_blank" rel="noopener">Guia operacional Sipag (PDF, Versão 2.0)</a><span class="src-date stale">nov 2020, fonte antiga</span></span>
+        </div>
+      </article>
+
+      <article class="competitor" id="pagbank">
+        <div class="competitor-head">
+          <div>
+            <h3>PagBank</h3>
+            <div class="sub">Moderninha (ex-PagSeguro) · adquirente digital</div>
+          </div>
+          <span class="badge local"><svg class="badge-icon"><use href="#i-local"></use></svg>Local por máquina</span>
+        </div>
+        <p>O "Compartilhamento de Máquina" permite até 5 usuários diferentes na mesma máquina simultaneamente, cada um com conta própria, mas configurado por aparelho, não centralizado entre máquinas.</p>
+        <ul class="facts">
+          <li>A "conta de vendedor adicional" (PagVendas) permite vincular mais de uma máquina à mesma conta para visão consolidada de vendas. Isso é <b>relatório centralizado</b>, não gestão de permissão de operador entre máquinas.</li>
+          <li>Modelos mais recentes (Moderninha Smart 2) rodam Android e integram com o app PagBank para gestão financeira geral.</li>
+        </ul>
+        <details class="why-box">
+          <summary>Por que eles fazem assim?</summary>
+          <p>O PagBank é digital first em outras frentes (conta PJ, cartão, investimentos), mas a linha Moderninha reaproveita a mesma plataforma de hardware PAX usada por outros adquirentes tradicionais. A Moderninha Smart, por exemplo, roda sobre o chassi PAX A930, o mesmo tipo de terminal usado por concorrentes. Isso sugere que a arquitetura local por aparelho vem do fornecedor de hardware compartilhado entre vários adquirentes, não de uma escolha exclusiva do PagBank.</p>
+          <p class="why-tag">Leitura própria a partir do compartilhamento de plataforma de hardware no setor, não uma declaração do PagBank.</p>
+        </details>
+        <div class="sources">
+          <span class="sources-label">Fontes</span>
+          <span class="src-item"><a href="https://maquininhaamarelinha.com/com-quantos-usuarios-posso-fazer-o-compartilhamento-de-maquina-pagbank/" target="_blank" rel="noopener">Compartilhamento de máquina PagBank</a><span class="src-date">set 2025</span></span>
+          <span class="src-item"><a href="https://maquininhaamarelinha.com/e-possivel-ver-as-vendas-de-outras-maquinas-com-a-conta-de-vendedor-adicional-do-pagvendas-pagbank/" target="_blank" rel="noopener">Conta de vendedor adicional PagVendas</a><span class="src-date">jul 2024</span></span>
+        </div>
+      </article>
+
+      <article class="competitor" id="stone">
+        <div class="competitor-head">
+          <div>
+            <h3>Stone</h3>
+            <div class="sub">Maquininha Stone / Ton · adquirente digital</div>
+          </div>
+          <span class="badge hybrid"><svg class="badge-icon"><use href="#i-hybrid"></use></svg>Local no terminal, perfis na conta</span>
+        </div>
+        <p>No nível do terminal físico, segue o mesmo padrão dos adquirentes tradicionais: senha de operador e supervisor local. A Conta Stone (app e conta digital PJ) tem "Perfis de Equipe" separados, que são a camada de conta bancária, não do terminal.</p>
+        <ul class="facts">
+          <li><b>Proprietário</b>: acesso total (transação, configuração, contratação).</li>
+          <li><b>Administrador</b>: mesmo nível do Proprietário, mas não pode excluir nem alterar o papel do Proprietário.</li>
+          <li><b>Desenvolvedor</b>: acesso técnico para integração, sem visão do resumo financeiro, limitado às lojas com acesso.</li>
+          <li><b>Observador</b> (substitui "Analista"): só visualização e exportação de dados, sem autonomia de configuração.</li>
+        </ul>
+        <details class="why-box">
+          <summary>Por que eles fazem assim?</summary>
+          <p>Este é o caso mais interessante do grupo tradicional: a Stone já sabe construir identidade centralizada, prova disso é o próprio "Perfis de Equipe" da Conta Stone. O que sugere que a decisão de manter o login do terminal físico local não é uma limitação técnica, é uma priorização de roadmap: eles resolveram identidade centralizada primeiro para o lado bancário (Conta Stone) e ainda não portaram esse modelo para a autenticação de operador na maquininha em si.</p>
+          <p class="why-tag">Leitura própria a partir da comparação entre os dois produtos da própria Stone, não uma declaração da empresa.</p>
+        </details>
+        <div class="sources">
+          <span class="sources-label">Fontes</span>
+          <span class="src-item"><a href="https://conteudo.stone.com.br/perfis-de-equipe-stone/" target="_blank" rel="noopener">Perfis de Equipe, Conta Stone</a><span class="src-date">ago 2026</span></span>
+          <span class="src-item"><a href="https://pagarme.helpjuice.com/pt_BR/p2-manual-da-dashboard/configura%C3%A7%C3%B5es-usu%C3%A1rios" target="_blank" rel="noopener">Configurações de Usuários, Central de Ajuda Stone (Pagar.me)</a><span class="src-date">sem data de publicação visível</span></span>
+        </div>
+      </article>
+
+      <article class="competitor" id="mercadopago">
+        <div class="competitor-head">
+          <div>
+            <h3>Mercado Pago <span class="mono" style="font-size:12px;color:var(--central);font-weight:600;">exceção ao padrão</span></h3>
+            <div class="sub">Point Smart / Point Smart 2 · adquirente digital</div>
+          </div>
+          <span class="badge central"><svg class="badge-icon"><use href="#i-central"></use></svg>Backend centralizado</span>
+        </div>
+        <p>O concorrente nacional que já resolve exatamente o que a provocação executiva propõe. A configuração de operadores acontece no <b>painel administrativo da conta</b>, não diretamente na maquininha, através da funcionalidade "Colaboradores".</p>
+        <ul class="facts">
+          <li><b>Estrutura Lojas e Caixas</b>: cada loja agrupa N caixas, cada caixa vinculado a um terminal Point físico. Todos os colaboradores operam sob a mesma Conta Negócio, e a separação é por caixa e por perfil, não por conta distinta.</li>
+          <li><b>Sincronização por pull, não push</b>: a mudança de permissão só entra em vigor quando o colaborador fecha a sessão e loga de novo. O terminal baixa e aplica as regras novas só nesse momento.</li>
+          <li><b>Gate de compliance</b>: se a conta principal não tiver KYC e dados do negócio completos, o operador fica bloqueado e não consegue logar na maquininha.</li>
+          <li><b>Permissão granular por categoria</b>: Recebimentos e pós-venda, Pagamentos e dinheiro, Serviços, Relatórios e métricas, Gestão e configuração.</li>
+          <li><b>Roles reutilizáveis de verdade</b>: você cria uma função (por exemplo, "Caixa", "Financeiro", "Gerente de Loja"), define as permissões dela e atribui a várias pessoas. Mudar a função propaga automaticamente para todo mundo com aquele perfil.</li>
+        </ul>
+        <details class="why-box">
+          <summary>Por que eles fazem assim?</summary>
+          <p>O Mercado Pago nasceu como o sistema de pagamentos de um marketplace, o Mercado Livre. A conta e a identidade do vendedor já existiam na nuvem antes de existir qualquer hardware físico de captura. Quando lançaram a Point, a maquininha entrou como mais um lugar para logar dentro dessa identidade que já era centralizada, não como o centro da arquitetura. Uma análise técnica da Point Smart 2 confirma armazenamento seguro em nuvem via servidores do próprio Mercado Pago, o que sustenta essa leitura.</p>
+          <p class="why-tag">Leitura própria a partir da origem do produto como sistema de pagamentos de marketplace, com um dado técnico confirmado por fonte externa.</p>
+        </details>
+        <div class="sources">
+          <span class="sources-label">Fontes</span>
+          <span class="src-item"><a href="https://www.mercadopago.com.br/blog/configurar-multiplos-operadores-point-smart-caixa" target="_blank" rel="noopener">Configurar operadores na Point Smart</a><span class="src-date">jun 2026</span></span>
+          <span class="src-item"><a href="https://www.mercadopago.com.br/blog/gerenciar-multiplos-usuarios-conta-negocio" target="_blank" rel="noopener">Gerenciar múltiplos usuários na Conta Negócio</a><span class="src-date">jul 2026</span></span>
+          <span class="src-item"><a href="https://www.mercadopago.com.br/blog/configurar-operadores-point-smart-2" target="_blank" rel="noopener">Configurar operadores na Point Smart 2</a><span class="src-date">jul/ago 2026</span></span>
+          <span class="src-item"><a href="https://www.mercadopago.com.br/blog/gestao-vendas-filiais-mercado-pago" target="_blank" rel="noopener">Gestão de múltiplos PDVs</a><span class="src-date">abr 2026</span></span>
+          <span class="src-item"><a href="https://www.mercadolivre.com.br/blog/tudo-sobre-point-smart-2" target="_blank" rel="noopener">Point Smart 2: análise completa (armazenamento em nuvem)</a><span class="src-date">jan 2026</span></span>
+        </div>
+      </article>
+
+      <article class="competitor" id="infinitepay">
+        <div class="competitor-head">
+          <div>
+            <h3>InfinitePay <span class="mono" style="font-size:12px;color:var(--central);font-weight:600;">também centralizado</span></h3>
+            <div class="sub">Maquininha Smart · CloudWalk (fintech nativa digital)</div>
+          </div>
+          <span class="badge central"><svg class="badge-icon"><use href="#i-central"></use></svg>Backend centralizado (binário)</span>
+        </div>
+        <p>Segundo concorrente nacional a fugir do padrão local, via a funcionalidade <b>"Modo Equipe"</b>. É mais simples que o Mercado Pago, não tem "Lojas e Caixas" nem roles nomeadas, mas a autenticação e a permissão do operador também vivem na conta, não no terminal.</p>
+        <ul class="facts">
+          <li><b>Convite centralizado</b>: pelo App InfinitePay, em Vendas, Gestão de equipe, Cadastrar novo perfil, o dono informa nome, CPF, telefone e e-mail do vendedor, que recebe um link de convite e aceita (ou cria conta) para começar a vender na hora.</li>
+          <li><b>Modelo binário de permissão</b>: só existem dois níveis, <b>Titular</b> (acesso total: saldo, empréstimo, alterações de conta, cancelamento de vendas) e <b>Vendedor</b> (Modo Equipe: só InfiniteTap, Pix e Link de Pagamento, sem saldo, sem empréstimo, sem alteração de conta, sem estorno). Não há papéis intermediários documentados, do tipo "Gerente" ou "Financeiro".</li>
+          <li><b>"Modo Vendedor" no terminal físico</b>: na Maquininha Smart, em Configurações, Seu PDV, o dono ativa esse modo e escolhe quais funções ficam visíveis para o funcionário que usa o terminal compartilhado. É uma segunda camada, complementar ao Modo Equipe da conta.</li>
+          <li><b>Estorno sem "senha de supervisor"</b>: o cancelamento de venda depende de saldo disponível na conta, não de uma senha local de nível elevado, e pode ser feito pelo app, pelo navegador ou na própria maquininha (só vendas do mesmo dia, com cartão em mãos). É uma arquitetura diferente do padrão Cielo, GetNet e Rede.</li>
+          <li>A InfinitePay é uma marca da <b>CloudWalk</b>, fintech brasileira "unicórnio" fundada em 2013, com arquitetura declaradamente cloud-native, o que ajuda a explicar por que a gestão de usuário já nasceu centralizada em vez de ser um retrofit.</li>
+        </ul>
+        <details class="why-box">
+          <summary>Por que eles fazem assim?</summary>
+          <p>Este é o único caso do levantamento em que a própria empresa declara publicamente o motivo. A InfinitePay descreve sua stack como "sistema baseado em nuvem", afirmando textualmente que isso "permite uma infraestrutura mais enxuta e econômica". Ou seja, cloud first foi escolha deliberada desde a fundação da CloudWalk em 2013, anterior à venda de qualquer hardware, e não uma decisão tomada especificamente para a gestão de usuários.</p>
+          <p class="why-tag">Citação de intenção declarada pela própria InfinitePay em seu site institucional, não uma inferência.</p>
+        </details>
+        <div class="sources">
+          <span class="sources-label">Fontes</span>
+          <span class="src-item"><a href="https://ajuda.infinitepay.io/pt-BR/articles/9358501-como-adicionar-vendedores-ao-modo-equipe" target="_blank" rel="noopener">Como adicionar vendedores ao Modo Equipe</a><span class="src-date">mai 2026</span></span>
+          <span class="src-item"><a href="https://ajuda.infinitepay.io/pt-BR/articles/9898205-como-usar-o-modo-equipe-no-pdv-da-maquininha-smart" target="_blank" rel="noopener">Modo Equipe no PDV da Maquininha Smart</a><span class="src-date">mai 2026</span></span>
+          <span class="src-item"><a href="https://ajuda.infinitepay.io/pt-BR/articles/6840485-como-usar-o-modo-equipe-no-app-infinitepay" target="_blank" rel="noopener">Modo Equipe no App InfinitePay</a><span class="src-date">mai 2026</span></span>
+          <span class="src-item"><a href="https://ajuda.infinitepay.io/pt-BR/articles/6097686-como-funciona-o-cancelamento-de-vendas" target="_blank" rel="noopener">Como funciona o cancelamento de vendas</a><span class="src-date">mai 2026</span></span>
+          <span class="src-item"><a href="https://www.infinitepay.io/" target="_blank" rel="noopener">InfinitePay, site institucional (declaração de arquitetura em nuvem)</a><span class="src-date">consultado ago 2026</span></span>
+          <span class="src-item"><a href="https://en.wikipedia.org/wiki/CloudWalk_(company)" target="_blank" rel="noopener">CloudWalk (empresa), Wikipedia</a><span class="src-date">artigo colaborativo, consultado ago 2026</span></span>
+        </div>
+      </article>
+
+      <article class="competitor" id="internacionais">
+        <div class="competitor-head">
+          <div>
+            <h3>Referência internacional: Square, Clover e SumUp</h3>
+            <div class="sub">POS cloud-native · fora do Brasil</div>
+          </div>
+          <span class="badge central"><svg class="badge-icon"><use href="#i-central"></use></svg>Padrão da categoria, não diferencial</span>
+        </div>
+        <p>Fora do Brasil, gestão de operador centralizada não é um recurso de ponta, é a expectativa básica de qualquer POS "cloud-native". Vale como termo de comparação para calibrar o quanto o mercado brasileiro tradicional está atrasado nisso.</p>
+        <ul class="facts">
+          <li><b>Square</b>: passcode pessoal de 4 dígitos por membro de equipe, válido em qualquer terminal autorizado. Permission sets no Dashboard central, individual por pessoa e por local no tier pago, compartilhado por local no tier grátis. Badges físicos combináveis com passcode.</li>
+          <li><b>Clover</b>: funcionários sincronizam automaticamente entre devices da mesma conta. Multi-loja exige configuração adicional de gestão cruzada. Roles-modelo (Owner, Manager, Employee) com toggle individual de permissão, sem templates salváveis, e sem log de auditoria nativo de alteração de permissão. Nem todo mundo lá fora resolveu tudo.</li>
+          <li><b>SumUp</b>: perfis individuais por membro de equipe, com login separado e acesso personalizado por função, gerenciado pela conta (SumUp Terminal).</li>
+        </ul>
+        <details class="why-box">
+          <summary>Por que eles fazem assim?</summary>
+          <p>Square, Clover e SumUp nasceram como startups de pagamento no pós-iPhone, entre 2009 e 2012, sem herdar o legado de hardware fechado de fabricantes tradicionais como PAX, Ingenico ou Verifone. Para essas empresas, o terminal físico sempre foi um cliente fino de uma plataforma de identidade que já existia na nuvem, o oposto do caminho histórico dos adquirentes brasileiros tradicionais.</p>
+          <p class="why-tag">Leitura própria a partir do ano de fundação e do modelo de negócio dessas empresas, não uma declaração de nenhuma delas.</p>
+        </details>
+        <div class="sources">
+          <span class="sources-label">Fontes</span>
+          <span class="src-item"><a href="https://squareup.com/help/us/en/article/8356-add-and-manage-team-members" target="_blank" rel="noopener">Square, Add and manage team members</a><span class="src-date">sem data de publicação visível</span></span>
+          <span class="src-item"><a href="https://squareup.com/help/us/en/article/5822-employee-permissions" target="_blank" rel="noopener">Square, Employee permissions</a><span class="src-date">sem data de publicação visível</span></span>
+          <span class="src-item"><a href="https://www.stitchflow.com/user-management/clover/manual" target="_blank" rel="noopener">Clover User Management Guide, Stitchflow</a><span class="src-date">mar 2026</span></span>
+          <span class="src-item"><a href="https://help.sumup.com/pt-PT/sections/46LoANh1dKuqPvqK05qCYA-sumup-terminal" target="_blank" rel="noopener">SumUp Terminal, Central de Apoio</a><span class="src-date">sem data de publicação visível</span></span>
+        </div>
+      </article>
+    </section>
+
+    <section id="comparativo">
+      <div class="section-head">
+        <span class="section-eyebrow">03 · Análise</span>
+        <h2>Comparativo entre concorrentes</h2>
+        <p>A hipótese do time executivo está majoritariamente certa para o mercado tradicional, mas não é mais um espaço vazio. Mercado Pago e InfinitePay já resolveram, e é o padrão internacional.</p>
+      </div>
+
+      <div class="filters" role="group" aria-label="Filtrar por modelo">
+        <button class="filter-btn is-active" data-filter="all">Todos (10)</button>
+        <button class="filter-btn" data-filter="local">Local</button>
+        <button class="filter-btn" data-filter="hybrid">Híbrido</button>
+        <button class="filter-btn" data-filter="central">Centralizado</button>
+      </div>
+
+      <div class="table-wrap">
+        <table id="comparativoTable">
+          <thead>
+            <tr>
+              <th>Concorrente</th>
+              <th>Modelo</th>
+              <th>Sincronização</th>
+              <th>Roles reutilizáveis</th>
+              <th>Multi-loja nativo</th>
+              <th>Trilha de auditoria</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-model="local">
+              <td>Cielo</td>
+              <td><span class="badge local"><svg class="badge-icon"><use href="#i-local"></use></svg>Local</span></td>
+              <td>N/A</td><td>Não</td><td>Não</td><td>Não observado</td>
+            </tr>
+            <tr data-model="local">
+              <td>GetNet</td>
+              <td><span class="badge local"><svg class="badge-icon"><use href="#i-local"></use></svg>Local</span></td>
+              <td>N/A</td><td>Não</td><td>Não</td><td>Não observado</td>
+            </tr>
+            <tr data-model="local">
+              <td>Rede / Sipag</td>
+              <td><span class="badge local"><svg class="badge-icon"><use href="#i-local"></use></svg>Local</span></td>
+              <td>N/A</td><td>Não</td><td>Não</td><td>Não observado</td>
+            </tr>
+            <tr data-model="local">
+              <td>PagBank</td>
+              <td><span class="badge local"><svg class="badge-icon"><use href="#i-local"></use></svg>Local (por máquina)</span></td>
+              <td>N/A</td><td>Não</td><td>Só relatório</td><td>Não observado</td>
+            </tr>
+            <tr data-model="hybrid">
+              <td>Stone</td>
+              <td><span class="badge hybrid"><svg class="badge-icon"><use href="#i-hybrid"></use></svg>Híbrido</span></td>
+              <td>N/A</td><td>Não</td><td>Só conta digital</td><td>Não observado</td>
+            </tr>
+            <tr data-model="central">
+              <td>Mercado Pago</td>
+              <td><span class="badge central"><svg class="badge-icon"><use href="#i-central"></use></svg>Centralizado</span></td>
+              <td>Pull no login</td><td><b>Sim</b></td><td><b>Sim</b></td><td>Não confirmado</td>
+            </tr>
+            <tr data-model="central">
+              <td>InfinitePay</td>
+              <td><span class="badge central"><svg class="badge-icon"><use href="#i-central"></use></svg>Centralizado</span></td>
+              <td>Não detalhado</td><td>Não (binário)</td><td>Não estruturado</td><td>Não observado</td>
+            </tr>
+            <tr data-model="central">
+              <td>Square (intl)</td>
+              <td><span class="badge central"><svg class="badge-icon"><use href="#i-central"></use></svg>Centralizado</span></td>
+              <td>Tempo real</td><td>Sim (tier pago)</td><td><b>Sim</b></td><td>Sim</td>
+            </tr>
+            <tr data-model="central">
+              <td>Clover (intl)</td>
+              <td><span class="badge central"><svg class="badge-icon"><use href="#i-central"></use></svg>Centralizado c/ ressalvas</span></td>
+              <td>Tempo real</td><td>Não (toggle manual)</td><td>Limitado</td><td>Não</td>
+            </tr>
+            <tr data-model="central">
+              <td>SumUp (intl)</td>
+              <td><span class="badge central"><svg class="badge-icon"><use href="#i-central"></use></svg>Centralizado</span></td>
+              <td>Não detalhado</td><td>Não confirmado</td><td>Não confirmado</td><td>Não observado</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="perfis">
+      <div class="section-head">
+        <span class="section-eyebrow">03 · Análise</span>
+        <h2>Perfis de acesso típicos</h2>
+        <p>Consolidação dos perfis observados em todos os concorrentes pesquisados. Ponto de partida para o desenho dos perfis do BTGPay POS.</p>
+      </div>
+      <div class="profile-grid">
+        <div class="profile-card">
+          <h4><span class="dot" style="background:var(--local)"></span>Administrador / Supervisor / Proprietário</h4>
+          <ul>
+            <li>Estornos e cancelamentos</li>
+            <li>Cadastro, edição e remoção de operadores</li>
+            <li>Configurações de rede e do terminal</li>
+            <li>Relatórios completos de todos os operadores</li>
+            <li>Acesso a saldo e movimentações financeiras</li>
+          </ul>
+        </div>
+        <div class="profile-card">
+          <h4><span class="dot" style="background:var(--central)"></span>Operador / Caixa / Vendedor</h4>
+          <ul>
+            <li>Realizar vendas</li>
+            <li>Ver apenas as próprias vendas/comissões</li>
+            <li>Abrir e fechar o próprio turno</li>
+            <li>Sem autonomia para estornar sem senha de supervisor</li>
+          </ul>
+        </div>
+        <div class="profile-card">
+          <h4><span class="dot" style="background:var(--hybrid)"></span>Visualizador / Observador</h4>
+          <ul>
+            <li>Leitura de relatórios</li>
+            <li>Sem qualquer permissão de configuração</li>
+            <li>Observado em: Cielo, Stone</li>
+          </ul>
+        </div>
+        <div class="profile-card">
+          <h4><span class="dot" style="background:var(--brand)"></span>Financeiro / Gerente de Loja</h4>
+          <ul>
+            <li>Aprova estornos de rotina</li>
+            <li>Sem acesso a contratação de crédito</li>
+            <li>Sem poder de excluir administrador</li>
+            <li>Observado em: Stone, Mercado Pago</li>
+          </ul>
+        </div>
+        <div class="profile-card">
+          <h4><span class="dot" style="background:#8b93a1"></span>Desenvolvedor / Integrador</h4>
+          <ul>
+            <li>Perfil técnico para configuração e testes</li>
+            <li>Sem acesso ao resumo financeiro</li>
+            <li>Observado em: Stone</li>
+          </ul>
+        </div>
+        <div class="profile-card">
+          <h4><span class="dot" style="background:var(--central)"></span>Role nomeada reutilizável</h4>
+          <ul>
+            <li>Não é "1 perfil = 1 pessoa"</li>
+            <li>Cargo (ex.: "Caixa Manhã") atribuível a N pessoas</li>
+            <li>Mudança na role propaga automaticamente</li>
+            <li>Observado em: Mercado Pago</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="arquitetura">
+      <div class="section-head">
+        <span class="section-eyebrow">03 · Análise</span>
+        <h2>Considerações de arquitetura</h2>
+        <p>Pontos sem resposta óbvia, cada concorrente escolheu diferente. Valem uma decisão explícita antes de desenhar o backend do BTGPay POS.</p>
+      </div>
+      <div class="arch-grid">
+        <div class="arch-card">
+          <span class="idx">01</span>
+          <h4>Timing de sincronização</h4>
+          <p>Pull no login (o dispositivo busca a atualização quando o operador loga) vs. push em tempo real (o servidor empurra a mudança na hora, exige o terminal sempre conectado).</p>
+          <div class="note">Mercado Pago usa pull no login: revogação de acesso só vale na próxima autenticação, não instantaneamente.</div>
+        </div>
+        <div class="arch-card">
+          <span class="idx">02</span>
+          <h4>Autenticação offline</h4>
+          <p>Nenhum concorrente documenta isso publicamente, mas é requisito crítico para POS de captura em rede instável. Implica cache local de credenciais (hash) no device, não só chamada de API a cada login.</p>
+          <div class="note">Pergunta em aberto: o que acontece se o operador tentar logar sem internet?</div>
+        </div>
+        <div class="arch-card">
+          <span class="idx">03</span>
+          <h4>Escopo da centralização</h4>
+          <p>Dentro de uma única conta/CNPJ (como Mercado Pago e InfinitePay fazem hoje) vs. multi-tenant real para franquias/holdings com múltiplos CNPJs.</p>
+          <div class="note">Isso muda bastante o modelo de dados do backend. Vale confirmar o caso de uso do BTGPay POS.</div>
+        </div>
+        <div class="arch-card">
+          <span class="idx">04</span>
+          <h4>Trilha de auditoria</h4>
+          <p>Quem alterou qual permissão, quando, em qual terminal. Mesmo players grandes internacionais como o Clover não têm log nativo disso.</p>
+          <div class="note">Não assumir que é trivial. Vale tratar como requisito de primeira classe, não um "nice to have".</div>
+        </div>
+        <div class="arch-card">
+          <span class="idx">05</span>
+          <h4>Camada de segurança híbrida</h4>
+          <p>Dá para manter uma segunda trava local (por exemplo, senha de estorno no próprio terminal) mesmo com login centralizado. Não precisa ser "ou local ou central".</p>
+          <div class="note">Útil especialmente para ações de alto risco (estorno, cancelamento) mesmo com sessão já autenticada.</div>
+        </div>
+        <div class="arch-card">
+          <span class="idx">06</span>
+          <h4>Gate de compliance</h4>
+          <p>O Mercado Pago bloqueia login de colaborador se a conta principal não tiver KYC/dados completos.</p>
+          <div class="note">Vale considerar um gate equivalente para o BTGPay POS antes de liberar operadores.</div>
+        </div>
+        <div class="arch-card">
+          <span class="idx">07</span>
+          <h4>Granularidade do perfil</h4>
+          <p>Perfil fixo por pessoa (a maioria dos concorrentes) contra role reutilizável de verdade (só o Mercado Pago tem isso hoje), que é mais escalável para operação com alta rotatividade.</p>
+          <div class="note">Camada de dispositivo (MDM/TMS) e camada de usuário são conceitos distintos. Centralizar uma não implica centralizar a outra.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="glossario">
+      <div class="section-head">
+        <span class="section-eyebrow">04 · Referência</span>
+        <h2>Glossário</h2>
+        <p>Termos técnicos usados nesta documentação, para consulta rápida por qualquer pessoa do time: produto, design ou engenharia.</p>
+      </div>
+      <input type="search" class="glossary-search" id="glossarySearch" placeholder="Buscar um termo…" aria-label="Buscar termo no glossário">
+      <dl class="glossary">
+        <div class="term-row"><dt>POS<span class="abbr">Point of Sale</span></dt><dd>Terminal físico que processa a transação de pagamento no ponto de venda. No Brasil, é popularmente chamado de "maquininha".</dd></div>
+        <div class="term-row"><dt>Adquirente</dt><dd>Instituição licenciada a processar transações de cartão em nome do lojista e repassar o valor (ex.: Cielo, Rede, GetNet). Sinônimo de "credenciadora".</dd></div>
+        <div class="term-row"><dt>Subadquirente</dt><dd>Instituição que oferece meios de pagamento sem ser adquirente direta, processando via um adquirente parceiro. Muitas fintechs de pagamento se encaixam aqui.</dd></div>
+        <div class="term-row"><dt>PIN<span class="abbr">Senha do operador</span></dt><dd>Código pessoal usado para autenticar um usuário no terminal antes de operar vendas ou funções restritas.</dd></div>
+        <div class="term-row"><dt>Senha do supervisor / lojista</dt><dd>Senha de nível elevado necessária para ações sensíveis (estorno, cadastro de operador) no modelo local tradicional de gestão de usuário.</dd></div>
+        <div class="term-row"><dt>Estorno</dt><dd>Devolução de um valor transacionado, iniciada pelo próprio lojista. É diferente de chargeback, que é contestação iniciada pelo portador do cartão junto à bandeira.</dd></div>
+        <div class="term-row"><dt>Chargeback</dt><dd>Contestação de uma transação iniciada pelo portador do cartão junto à bandeira/emissor, podendo resultar em estorno forçado ao lojista.</dd></div>
+        <div class="term-row"><dt>TEF<span class="abbr">Transferência Eletrônica de Fundos</span></dt><dd>Integração entre um sistema de frente de caixa (PDV) e a maquininha, que autoriza o pagamento automaticamente sem digitação manual do valor na maquininha.</dd></div>
+        <div class="term-row"><dt>PDV<span class="abbr">Ponto de Venda / Frente de caixa</span></dt><dd>Sistema de gestão de vendas. Pode rodar dentro do próprio terminal Android da maquininha ou em um computador separado, integrado via TEF.</dd></div>
+        <div class="term-row"><dt>RBAC<span class="abbr">Role-Based Access Control</span></dt><dd>Modelo de controle de acesso baseado em papéis/funções reutilizáveis (roles), em vez de permissão configurada uma a uma por pessoa.</dd></div>
+        <div class="term-row"><dt>MDM<span class="abbr">Mobile Device Management</span></dt><dd>Gestão remota de uma frota de dispositivos: deploy de aplicativo, configuração e bloqueio remoto.</dd></div>
+        <div class="term-row"><dt>TMS<span class="abbr">Terminal Management System</span></dt><dd>Equivalente ao MDM voltado especificamente a terminais de pagamento: deploy de apps homologados, atualização de firmware, configuração de rede da frota.</dd></div>
+        <div class="term-row"><dt>KYC<span class="abbr">Know Your Customer</span></dt><dd>Processo de verificação de identidade exigido antes de liberar certas operações financeiras. Usado pelo Mercado Pago como gate para liberar colaboradores.</dd></div>
+        <div class="term-row"><dt>Multi-tenant</dt><dd>Arquitetura que isola dados e configurações de múltiplos clientes (ou múltiplos CNPJs) dentro da mesma infraestrutura compartilhada.</dd></div>
+        <div class="term-row"><dt>Sincronização pull vs. push</dt><dd>Pull: o dispositivo busca a atualização por conta própria (ex.: no momento do login). Push: o servidor envia a atualização em tempo real, independentemente de ação do dispositivo.</dd></div>
+        <div class="term-row"><dt>PCI DSS<span class="abbr">Payment Card Industry Data Security Standard</span></dt><dd>Padrão de segurança da indústria de cartões de pagamento para proteção de dados do portador do cartão.</dd></div>
+        <div class="term-row"><dt>PTS<span class="abbr">PIN Transaction Security</span></dt><dd>Certificação específica para segurança de dispositivos que capturam PIN, exigida para homologação de terminais de pagamento.</dd></div>
+        <div class="term-row"><dt>Trilha de auditoria<span class="abbr">Audit log</span></dt><dd>Registro de quem fez o quê, quando e em qual terminal. Usado para rastreabilidade e investigação de incidentes de segurança.</dd></div>
+        <div class="term-row"><dt>Perfil de acesso</dt><dd>Conjunto de permissões atribuído a um usuário. Pode ser fixo por pessoa (a maioria dos concorrentes) ou reutilizável como role, como no caso do Mercado Pago.</dd></div>
+        <div class="term-row"><dt>Colaborador</dt><dd>Termo usado por Mercado Pago e Stone para um membro de equipe com acesso configurado à conta/negócio digital.</dd></div>
+        <div class="term-row"><dt>Lojas e Caixas</dt><dd>Hierarquia usada pelo Mercado Pago onde uma "loja" agrupa N "caixas" (registradores/terminais), organizando a operação multi-terminal dentro de uma mesma conta.</dd></div>
+        <div class="term-row"><dt>Modo Equipe</dt><dd>Funcionalidade da InfinitePay que permite convidar vendedores para vender pela conta do titular, com acesso restrito só às funções de venda.</dd></div>
+        <div class="term-row"><dt>Fila de aprovação</dt><dd>Mecanismo onde uma ação de um operador de menor privilégio precisa ser aprovada por um administrador antes de ser efetivada.</dd></div>
+        <div class="term-row"><dt>Antifraude</dt><dd>Camada de sistemas e regras que detecta e bloqueia transações suspeitas automaticamente, com base em padrões de comportamento.</dd></div>
+        <div class="term-row"><dt>NFC<span class="abbr">Near Field Communication</span></dt><dd>Tecnologia de aproximação usada para pagamentos contactless e para transformar smartphones em maquininhas (ex.: InfiniteTap, Tap to Pay).</dd></div>
+        <div class="term-row"><dt>Terminal Android aberto</dt><dd>POS que roda um sistema operacional Android restrito, permitindo instalação de aplicativos de terceiros homologados (ex.: Cielo Smart, GetNet Smart).</dd></div>
+      </dl>
+    </section>
+
+    <section id="historico">
+      <div class="section-head">
+        <span class="section-eyebrow">04 · Referência</span>
+        <h2>Histórico de revisões</h2>
+        <p>Registro de versões desta documentação. Cada rodada de pesquisa ou decisão vira uma entrada aqui.</p>
+      </div>
+      <div class="changelog">
+        <div class="change-entry">
+          <div class="change-head"><span class="change-version">v1.1</span><span class="change-date">13 ago 2026</span></div>
+          <p>Levantamento de mercado ampliado com a InfinitePay (CloudWalk), segundo concorrente nacional identificado com backend centralizado de gestão de usuários, via "Modo Equipe".</p>
+          <ul>
+            <li>Card da InfinitePay adicionado ao Levantamento de Mercado</li>
+            <li>Linha da InfinitePay adicionada ao Comparativo</li>
+          </ul>
+        </div>
+        <div class="change-entry">
+          <div class="change-head"><span class="change-version">v1.0</span><span class="change-date">13 ago 2026</span></div>
+          <p>Levantamento de mercado inicial, motivado pela provocação do time executivo sobre gestão de usuários local vs. centralizada na POS.</p>
+          <ul>
+            <li>Pesquisa de campo: Cielo, GetNet, Rede/Sipag, PagBank, Stone, Mercado Pago, Square, Clover, SumUp</li>
+            <li>Primeira versão do comparativo, perfis típicos, considerações de arquitetura e glossário</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <footer class="doc-foot">
+      Documento interno do time de Front (Flutter) do BTGPay, projeto POS própria, feature de Gestão de Usuários. Atualizado por conversas de pesquisa e decisão registradas ao longo do desenvolvimento. Reabra este arquivo no navegador a qualquer momento: todo o conteúdo está neste único HTML, sem dependência de internet.
+    </footer>
+
+  </main>
+</div>
+
+<script>
+  // mobile nav toggle
+  var toggle = document.getElementById('navToggle');
+  var sidebar = document.getElementById('sidebar');
+  if(toggle){
+    toggle.addEventListener('click', function(){ sidebar.classList.toggle('open'); });
+    document.addEventListener('click', function(e){
+      if(sidebar.classList.contains('open') && !sidebar.contains(e.target) && e.target !== toggle){
+        sidebar.classList.remove('open');
+      }
+    });
+  }
+
+  // scrollspy
+  var links = Array.prototype.slice.call(document.querySelectorAll('#tocNav a'));
+  var targets = links.map(function(a){ return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
+  function onScroll(){
+    var pos = window.scrollY + 140;
+    var current = null;
+    targets.forEach(function(t){ if(t.offsetTop <= pos) current = t; });
+    links.forEach(function(a){ a.classList.remove('active'); });
+    if(current){
+      var match = links.find(function(a){ return a.getAttribute('href') === '#' + current.id; });
+      if(match) match.classList.add('active');
+    }
+  }
+  document.addEventListener('scroll', onScroll, { passive:true });
+  onScroll();
+
+  // comparativo filters
+  document.addEventListener('DOMContentLoaded', function(){
+    var buttons = document.querySelectorAll('.filter-btn');
+    var rows = document.querySelectorAll('#comparativoTable tbody tr');
+    buttons.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        buttons.forEach(function(b){ b.classList.remove('is-active'); });
+        btn.classList.add('is-active');
+        var f = btn.getAttribute('data-filter');
+        rows.forEach(function(r){
+          r.style.display = (f === 'all' || r.getAttribute('data-model') === f) ? '' : 'none';
+        });
+      });
+    });
+
+    // glossary search
+    var search = document.getElementById('glossarySearch');
+    if(search){
+      search.addEventListener('input', function(){
+        var q = search.value.trim().toLowerCase();
+        document.querySelectorAll('.term-row').forEach(function(row){
+          var text = row.textContent.toLowerCase();
+          row.classList.toggle('hidden', q.length > 0 && text.indexOf(q) === -1);
+        });
+      });
+    }
+  });
+</script>
+</body>
+</html>
